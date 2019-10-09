@@ -1,0 +1,24 @@
+{
+  "name": "@notify-watcher/server",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "repository": "https://github.com/notify-watcher/server.git",
+  "author": {
+    "name": "Francisco Sandoval",
+    "email": "franciscosandoval15@gmail.com"
+  },
+  "contributors": [
+    {
+      "name": "Sebastián Salata",
+      "email": "sa.salatart@gmail.com",
+      "url": "https://salatart.com"
+    },
+    {
+      "name": "Nicolás Gebauer",
+      "email": "negebauerm@gmail.com",
+      "url": "https://negebauer.com"
+    }
+  ],
+  "license": "MIT",
+}
