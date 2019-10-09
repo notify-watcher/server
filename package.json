@@ -20,5 +20,14 @@
       "url": "https://negebauer.com"
     }
   ],
-  "license": "AGPL-3.0-or-later"
+  "license": "AGPL-3.0-or-later",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
+  },
+  "devDependencies": {
+    "eslint": "^6.5.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2"
+  }
 }
