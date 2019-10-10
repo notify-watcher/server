@@ -25,6 +25,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
+  "dependencies": {},
   "devDependencies": {
     "eslint": "^6.5.1",
     "eslint-config-airbnb-base": "^14.0.0",
