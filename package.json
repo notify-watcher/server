@@ -2,7 +2,7 @@
   "name": "@notify-watcher/server",
   "version": "0.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "repository": "https://github.com/notify-watcher/server.git",
   "author": {
     "name": "Francisco Sandoval",
@@ -22,7 +22,7 @@
   ],
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "dev": "nodemon server.js",
+    "dev": "nodemon index.js",
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
