@@ -5,15 +5,21 @@ const setUpWatchers = require('./src/watchers');
 const config = require('./config');
 
 const app = new Koa();
-const router = new Router();
 
-router.get('/', ctx => {
-  ctx.body = 'Hello World!';
+const baseRouter = new Router();
+require('./routes/base')({ baseRouter });
+
+const watchersRouter = new Router({ prefix: '/watchers' });
+require('./routes/watchers')({ watchersRouter });
+
+const routers = [baseRouter, watchersRouter];
+
+routers.forEach(router => {
+  app.use(router.routes());
+  app.use(router.allowedMethods());
 });
 
 app.use(logger());
-app.use(router.routes());
-app.use(router.allowedMethods());
 
 const server = app.listen(config.PORT);
 
