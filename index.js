@@ -1,8 +1,11 @@
 const Koa = require('koa');
 const Router = require('koa-router');
 const logger = require('koa-logger');
+const mongoose = require('mongoose');
 const setUpWatchers = require('./src/watchers');
 const config = require('./config');
+
+mongoose.connect(config.DATABASE_URL);
 
 const app = new Koa();
 

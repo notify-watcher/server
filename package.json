@@ -38,6 +38,7 @@
     "koa": "^2.8.2",
     "koa-logger": "^3.2.1",
     "koa-router": "^7.4.0",
+    "mongoose": "^5.7.4",
     "nodegit": "^0.26.2"
   },
   "devDependencies": {
