@@ -55,4 +55,9 @@ async function setUpWatchers() {
   // TODO: Set up crons for running watchers
 }
 
+if (require.main === module) {
+  console.log('a');
+  setUpWatchers().then(() => console.log('Done'));
+}
+
 module.exports = setUpWatchers;
