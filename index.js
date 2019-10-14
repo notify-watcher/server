@@ -1,7 +1,7 @@
 const Koa = require('koa');
 const Router = require('koa-router');
 const logger = require('koa-logger');
-
+require('./src/watchers')();
 const config = require('./config');
 
 const app = new Koa();
