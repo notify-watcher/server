@@ -23,6 +23,7 @@
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "dev": "nodemon index.js",
+    "dev:api": "DONT_DOWNLOAD_WATCHERS=true nodemon index.js",
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
