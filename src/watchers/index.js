@@ -8,8 +8,6 @@ const { WATCHERS_LIST, ALL_WATCHERS_KEY } = require('./list');
 const tempDirPath = `${__dirname}/tmp`;
 const downloadedDirPath = `${__dirname}/downloaded`;
 
-fs.emptyDirSync(downloadedDirPath);
-
 function ref(branch) {
   return `refs/remotes/origin/${branch}`;
 }
@@ -24,6 +22,7 @@ function saveWatchers(names) {
 async function setUpWatchers() {
   let allWatchers = [];
   if (DONT_DOWNLOAD_WATCHERS) return allWatchers;
+  fs.emptyDirSync(downloadedDirPath);
   for (let i = 0; i < WATCHERS_LIST.length; i += 1) {
     const watcher = WATCHERS_LIST[i];
     const { url, branch, commit, watchers } = watcher;
@@ -48,6 +47,7 @@ async function setUpWatchers() {
     saveWatchers(watchersNames);
     allWatchers = [...allWatchers, ...watchersNames];
   }
+  fs.emptyDirSync(tempDirPath);
 
   // TODO: Set up crons for running watchers
 
