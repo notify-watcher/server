@@ -7,7 +7,7 @@ const config = require('./config');
 const app = new Koa();
 const router = new Router();
 
-router.get('/', (ctx, next) => {
+router.get('/', ctx => {
   ctx.body = 'Hello World!';
 });
 
