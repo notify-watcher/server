@@ -20,7 +20,7 @@ function saveWatchers(names) {
 }
 
 async function setUpWatchers() {
-  if (config.DONT_DOWNLOAD_WATCHERS) return;
+  if (!config.DOWNLOAD_WATCHERS) return;
   config.WATCHERS = [];
   fs.emptyDirSync(downloadedDirPath);
   for (let i = 0; i < WATCHERS_LIST.length; i += 1) {
