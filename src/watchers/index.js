@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 const fs = require('fs-extra');
 const git = require('nodegit');
-const { DONT_DOWNLOAD_WATCHERS } = require('../../config');
+const config = require('../../config');
 const { WATCHERS_LIST, ALL_WATCHERS_KEY } = require('./list');
 
 const tempDirPath = `${__dirname}/tmp`;
@@ -20,8 +20,8 @@ function saveWatchers(names) {
 }
 
 async function setUpWatchers() {
-  let allWatchers = [];
-  if (DONT_DOWNLOAD_WATCHERS) return allWatchers;
+  if (config.DONT_DOWNLOAD_WATCHERS) return;
+  config.WATCHERS = [];
   fs.emptyDirSync(downloadedDirPath);
   for (let i = 0; i < WATCHERS_LIST.length; i += 1) {
     const watcher = WATCHERS_LIST[i];
@@ -35,7 +35,10 @@ async function setUpWatchers() {
     } else if (commit) {
       const oid = git.Oid.fromString(commit);
       reference = await git.Reference.create(repo, ref(branch), oid, 1, '');
-    } else return console.warn(`No branch or commit for remote ${url}`);
+    } else {
+      console.warn(`No branch or commit for remote ${url}`);
+      return;
+    }
     await repo.checkoutRef(reference);
 
     const watchersNames = fs
@@ -45,13 +48,11 @@ async function setUpWatchers() {
       .filter(name => name[0] !== '.')
       .filter(name => watchers === ALL_WATCHERS_KEY || watchers.includes(name));
     saveWatchers(watchersNames);
-    allWatchers = [...allWatchers, ...watchersNames];
+    config.WATCHERS = config.WATCHERS.concat(watchersNames);
   }
   fs.emptyDirSync(tempDirPath);
 
   // TODO: Set up crons for running watchers
-
-  return allWatchers;
 }
 
 module.exports = setUpWatchers;
