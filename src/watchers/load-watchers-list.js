@@ -29,7 +29,12 @@ function loadWatchersList() {
       watcher.config.timeframe.type === TIMEFRAMES.hour ||
       watcher.config.timeframe.type === TIMEFRAMES.day,
   );
-  return { minuteWatchers, hourWatchers };
+  return {
+    minuteWatchersAuth: minuteWatchers.filter(({ config: c }) => c.auth),
+    minuteWatchersNoAuth: minuteWatchers.filter(({ config: c }) => !c.auth),
+    hourWatchersAuth: hourWatchers.filter(({ config: c }) => c.auth),
+    hourWatchersNoAuth: hourWatchers.filter(({ config: c }) => !c.auth),
+  };
 }
 
 module.exports = loadWatchersList;
