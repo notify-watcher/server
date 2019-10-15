@@ -13,13 +13,12 @@ function ref(branch) {
 }
 
 function saveWatchers(names, repoTempPath) {
-  config.WATCHERS = config.WATCHERS.concat(names);
   names.forEach(name =>
     fs.copySync(`${repoTempPath}/${name}`, `${downloadedDirPath}/${name}`),
   );
 }
 
-async function setUpWatchers() {
+async function downloadWatchers() {
   if (!config.DOWNLOAD_WATCHERS) return;
   config.WATCHERS = [];
   fs.emptyDirSync(tempDirPath);
@@ -64,8 +63,16 @@ async function setUpWatchers() {
   );
 
   fs.emptyDirSync(tempDirPath);
+}
 
-  // TODO: Set up crons for running watchers
+async function setUpWatchers() {
+  await downloadWatchers();
+
+  config.WATCHERS = fs
+    .readdirSync(downloadedDirPath, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(({ name }) => name)
+    .filter(name => name[0] !== '.');
 }
 
 if (require.main === module) {
