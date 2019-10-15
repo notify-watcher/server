@@ -13,6 +13,7 @@ function ref(branch) {
 }
 
 function saveWatchers(names, repoTempPath) {
+  config.WATCHERS = config.WATCHERS.concat(names);
   names.forEach(name =>
     fs.copySync(`${repoTempPath}/${name}`, `${downloadedDirPath}/${name}`),
   );
@@ -23,6 +24,7 @@ async function setUpWatchers() {
   config.WATCHERS = [];
   fs.emptyDirSync(tempDirPath);
   fs.emptyDirSync(downloadedDirPath);
+
   await Promise.all(
     WATCHERS_LIST.map(async (watcher, index) => {
       const repoTempPath = `${tempDirPath}/${index}`;
@@ -54,10 +56,10 @@ async function setUpWatchers() {
       console.log(
         `i:${index} Saving ${watchersNames} from ${url}@${branch || commit}`,
       );
-      saveWatchers(watchersNames, repoTempPath);
-      config.WATCHERS = config.WATCHERS.concat(watchersNames);
+      return saveWatchers(watchersNames, repoTempPath);
     }),
   );
+
   fs.emptyDirSync(tempDirPath);
 
   // TODO: Set up crons for running watchers
