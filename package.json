@@ -23,14 +23,18 @@
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "dev": "nodemon index.js",
+    "dev:watchers": "DOWNLOAD_WATCHERS=true nodemon index.js",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "download-watchers": "DOWNLOAD_WATCHERS=true node src/watchers/index.js"
   },
   "dependencies": {
     "@notify-watcher/core": "0.0.2",
+    "fs-extra": "^8.1.0",
     "koa": "^2.8.2",
     "koa-logger": "^3.2.1",
-    "koa-router": "^7.4.0"
+    "koa-router": "^7.4.0",
+    "nodegit": "^0.26.2"
   },
   "devDependencies": {
     "eslint": "^6.5.1",

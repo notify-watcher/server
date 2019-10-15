@@ -1,0 +1,6 @@
+{
+  "ignore": [
+    "src/watchers/tmp",
+    "src/watchers/downloaded"
+  ]
+}
