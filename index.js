@@ -20,8 +20,8 @@ const server = app.listen(config.PORT);
 async function startup() {
   // TODO: Setup db connection here
 
-  await setUpWatchers();
-  // console.log('All watchers', config.WATCHERS);
+  const { watchers } = await setUpWatchers();
+  config.WATCHERS = watchers;
 
   // TODO: Start api here
 }
