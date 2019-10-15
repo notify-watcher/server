@@ -30,6 +30,7 @@ async function setUpWatchers() {
       const repoTempPath = `${tempDirPath}/${index}`;
       const { url, branch, commit, watchers } = watcher;
 
+      if (!url) return console.warn(`WARN: No url for i:${index} ${url}`);
       if (!branch && !commit)
         return console.warn(`WARN: No branch or commit for i:${index} ${url}`);
       if (!watchers || watchers.length === 0)
