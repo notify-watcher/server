@@ -53,8 +53,4 @@ async function setUpWatchers() {
   return { watchers: allWatchers, minuteWatchersCronJob, hourWatchersCronJob };
 }
 
-if (require.main === module) {
-  setUpWatchers().then(() => console.log('\nDownloaded watchers'));
-}
-
 module.exports = setUpWatchers;

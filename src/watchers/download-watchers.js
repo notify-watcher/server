@@ -61,4 +61,8 @@ async function downloadWatchers() {
   fs.emptyDirSync(TEMP_DIR_PATH);
 }
 
+if (require.main === module) {
+  downloadWatchers().then(() => console.log('\nDownloaded watchers'));
+}
+
 module.exports = downloadWatchers;

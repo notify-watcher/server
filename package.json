@@ -26,7 +26,7 @@
     "dev:watchers": "DOWNLOAD_WATCHERS=true nodemon index.js",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "download-watchers": "DOWNLOAD_WATCHERS=true node src/watchers/index.js"
+    "download-watchers": "DOWNLOAD_WATCHERS=true node src/watchers/download-watchers.js"
   },
   "dependencies": {
     "@notify-watcher/core": "0.1.0",
