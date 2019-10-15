@@ -4,6 +4,8 @@ const fs = require('fs-extra');
 const git = require('nodegit');
 const config = require('../../config');
 const { WATCHERS_LIST, ALL_WATCHERS_KEY } = require('./list');
+const { TIMEFRAMES, validateTimeframe } = require('./validate-timeframe');
+const validateLibs = require('./validate-libs');
 
 const tempDirPath = `${__dirname}/tmp`;
 const downloadedDirPath = `${__dirname}/downloaded`;
@@ -71,8 +73,32 @@ async function setUpWatchers() {
   config.WATCHERS = fs
     .readdirSync(downloadedDirPath, { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
-    .map(({ name }) => name)
-    .filter(name => name[0] !== '.');
+    .filter(({ name }) => name[0] !== '.')
+    .map(({ name }) => name);
+
+  const watchers = config.WATCHERS.map(name => {
+    const path = `${downloadedDirPath}/${name}`;
+    // eslint-disable-next-line global-require, import/no-dynamic-require
+    const { config: watcherConfig, checkAuth, watch } = require(path);
+    return {
+      config: watcherConfig,
+      checkAuth,
+      watch,
+      name,
+      path,
+    };
+  })
+    .filter(validateLibs)
+    .filter(validateTimeframe);
+
+  const minuteWatchers = watchers.filter(
+    watcher => watcher.config.timeframe.type === TIMEFRAMES.minute,
+  );
+  const hourWatchers = watchers.filter(
+    watcher =>
+      watcher.config.timeframe.type === TIMEFRAMES.hour ||
+      watcher.config.timeframe.type === TIMEFRAMES.day,
+  );
 }
 
 if (require.main === module) {
