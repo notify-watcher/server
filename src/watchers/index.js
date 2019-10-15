@@ -1,4 +1,3 @@
-/* eslint-disable no-await-in-loop */
 /* eslint-disable no-console */
 const fs = require('fs-extra');
 const config = require('../../config');
@@ -16,6 +15,8 @@ async function setUpWatchers() {
     .map(({ name }) => name);
 
   const { minuteWatchers, hourWatchers } = loadWatchersList();
+  console.log('minuteWatchers', minuteWatchers);
+  console.log('hourWatchers', hourWatchers);
 }
 
 if (require.main === module) {
