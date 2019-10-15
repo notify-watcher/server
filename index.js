@@ -21,6 +21,7 @@ async function startup() {
   // TODO: Setup db connection here
 
   await setUpWatchers();
+  // console.log('All watchers', config.WATCHERS);
 
   // TODO: Start api here
 }

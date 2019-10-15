@@ -1,22 +1,22 @@
-const config = require('../../config');
 const { DOWNLOADED_DIR_PATH } = require('./config');
 const validateAuth = require('./validate-auth');
 const validateLibs = require('./validate-libs');
 const { TIMEFRAMES, validateTimeframe } = require('./validate-timeframe');
 
-function loadWatchersList() {
-  const watchers = config.WATCHERS.map(name => {
-    const path = `${DOWNLOADED_DIR_PATH}/${name}`;
-    // eslint-disable-next-line global-require, import/no-dynamic-require
-    const { config: watcherConfig, checkAuth, watch } = require(path);
-    return {
-      config: watcherConfig,
-      checkAuth,
-      watch,
-      name,
-      path,
-    };
-  })
+function loadWatchersList(watchersNames) {
+  const watchers = watchersNames
+    .map(name => {
+      const path = `${DOWNLOADED_DIR_PATH}/${name}`;
+      // eslint-disable-next-line global-require, import/no-dynamic-require
+      const { config: watcherConfig, checkAuth, watch } = require(path);
+      return {
+        config: watcherConfig,
+        checkAuth,
+        watch,
+        name,
+        path,
+      };
+    })
     .filter(validateAuth)
     .filter(validateLibs)
     .filter(validateTimeframe);
@@ -30,6 +30,7 @@ function loadWatchersList() {
       watcher.config.timeframe.type === TIMEFRAMES.day,
   );
   return {
+    allWatchers: watchers,
     minuteWatchersAuth: minuteWatchers.filter(({ config: c }) => c.auth),
     minuteWatchersNoAuth: minuteWatchers.filter(({ config: c }) => !c.auth),
     hourWatchersAuth: hourWatchers.filter(({ config: c }) => c.auth),

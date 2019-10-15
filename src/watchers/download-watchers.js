@@ -17,7 +17,6 @@ function saveWatchers(names, repoTempPath) {
 
 async function downloadWatchers() {
   if (!config.DOWNLOAD_WATCHERS) return;
-  config.WATCHERS = [];
   fs.emptyDirSync(TEMP_DIR_PATH);
   fs.emptyDirSync(DOWNLOADED_DIR_PATH);
   console.table(WATCHERS_LIST);
