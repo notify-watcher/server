@@ -26,7 +26,12 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
-  "dependencies": {},
+  "dependencies": {
+    "@notify-watcher/core": "0.0.2",
+    "koa": "^2.8.2",
+    "koa-logger": "^3.2.1",
+    "koa-router": "^7.4.0"
+  },
   "devDependencies": {
     "eslint": "^6.5.1",
     "eslint-config-airbnb-base": "^14.0.0",
@@ -35,10 +40,5 @@
     "eslint-plugin-prettier": "^3.1.1",
     "nodemon": "^1.19.3",
     "prettier": "^1.18.2"
-  },
-  "dependencies": {
-    "koa": "^2.8.2",
-    "koa-logger": "^3.2.1",
-    "koa-router": "^7.4.0"
   }
 }
