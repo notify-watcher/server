@@ -6,7 +6,7 @@ const ALL_WATCHERS_KEY = 'all';
 const WATCHERS_LIST = [
   {
     url: 'https://github.com/notify-watcher/watchers',
-    branch: 'watchers-config',
+    branch: 'master',
     watchers: ['gtd', 'github-notifications', 'vtr'],
   },
   // {
