@@ -29,7 +29,7 @@
     "download-watchers": "DOWNLOAD_WATCHERS=true node src/watchers/index.js"
   },
   "dependencies": {
-    "@notify-watcher/core": "0.0.2",
+    "@notify-watcher/core": "0.1.0",
     "fs-extra": "^8.1.0",
     "koa": "^2.8.2",
     "koa-logger": "^3.2.1",
