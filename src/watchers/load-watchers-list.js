@@ -1,5 +1,6 @@
 const config = require('../../config');
 const { DOWNLOADED_DIR_PATH } = require('./config');
+const validateAuth = require('./validate-auth');
 const validateLibs = require('./validate-libs');
 const { TIMEFRAMES, validateTimeframe } = require('./validate-timeframe');
 
@@ -16,6 +17,7 @@ function loadWatchersList() {
       path,
     };
   })
+    .filter(validateAuth)
     .filter(validateLibs)
     .filter(validateTimeframe);
 
