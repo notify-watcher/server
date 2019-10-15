@@ -24,6 +24,8 @@ async function setUpWatchers() {
   config.WATCHERS = [];
   fs.emptyDirSync(tempDirPath);
   fs.emptyDirSync(downloadedDirPath);
+  console.table(WATCHERS_LIST);
+  console.log();
 
   await Promise.all(
     WATCHERS_LIST.map(async (watcher, index) => {
