@@ -3,12 +3,9 @@
 const fs = require('fs-extra');
 const git = require('nodegit');
 const config = require('../../config');
+const { TEMP_DIR_PATH, DOWNLOADED_DIR_PATH } = require('./config');
 const { WATCHERS_LIST, ALL_WATCHERS_KEY } = require('./list');
-const { TIMEFRAMES, validateTimeframe } = require('./validate-timeframe');
-const validateLibs = require('./validate-libs');
-
-const tempDirPath = `${__dirname}/tmp`;
-const downloadedDirPath = `${__dirname}/downloaded`;
+const loadWatchersList = require('./load-watchers-list');
 
 function ref(branch) {
   return `refs/remotes/origin/${branch}`;
@@ -16,21 +13,21 @@ function ref(branch) {
 
 function saveWatchers(names, repoTempPath) {
   names.forEach(name =>
-    fs.copySync(`${repoTempPath}/${name}`, `${downloadedDirPath}/${name}`),
+    fs.copySync(`${repoTempPath}/${name}`, `${DOWNLOADED_DIR_PATH}/${name}`),
   );
 }
 
 async function downloadWatchers() {
   if (!config.DOWNLOAD_WATCHERS) return;
   config.WATCHERS = [];
-  fs.emptyDirSync(tempDirPath);
-  fs.emptyDirSync(downloadedDirPath);
+  fs.emptyDirSync(TEMP_DIR_PATH);
+  fs.emptyDirSync(DOWNLOADED_DIR_PATH);
   console.table(WATCHERS_LIST);
   console.log();
 
   await Promise.all(
     WATCHERS_LIST.map(async (watcher, index) => {
-      const repoTempPath = `${tempDirPath}/${index}`;
+      const repoTempPath = `${TEMP_DIR_PATH}/${index}`;
       const { url, branch, commit, watchers } = watcher;
 
       if (!url) return console.warn(`WARN: No url for i:${index} ${url}`);
@@ -64,41 +61,19 @@ async function downloadWatchers() {
     }),
   );
 
-  fs.emptyDirSync(tempDirPath);
+  fs.emptyDirSync(TEMP_DIR_PATH);
 }
 
 async function setUpWatchers() {
   await downloadWatchers();
 
   config.WATCHERS = fs
-    .readdirSync(downloadedDirPath, { withFileTypes: true })
+    .readdirSync(DOWNLOADED_DIR_PATH, { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
     .filter(({ name }) => name[0] !== '.')
     .map(({ name }) => name);
 
-  const watchers = config.WATCHERS.map(name => {
-    const path = `${downloadedDirPath}/${name}`;
-    // eslint-disable-next-line global-require, import/no-dynamic-require
-    const { config: watcherConfig, checkAuth, watch } = require(path);
-    return {
-      config: watcherConfig,
-      checkAuth,
-      watch,
-      name,
-      path,
-    };
-  })
-    .filter(validateLibs)
-    .filter(validateTimeframe);
-
-  const minuteWatchers = watchers.filter(
-    watcher => watcher.config.timeframe.type === TIMEFRAMES.minute,
-  );
-  const hourWatchers = watchers.filter(
-    watcher =>
-      watcher.config.timeframe.type === TIMEFRAMES.hour ||
-      watcher.config.timeframe.type === TIMEFRAMES.day,
-  );
+  const { minuteWatchers, hourWatchers } = loadWatchersList();
 }
 
 if (require.main === module) {
