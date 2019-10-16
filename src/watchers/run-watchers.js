@@ -39,6 +39,12 @@ function stopRunning(id) {
   MOCK_REDIS[id] = false;
 }
 
+function snapshotToString(snapshot) {
+  return Object.keys(snapshot)
+    .map(key => `${key}: ${snapshot[key]}`)
+    .join(' - ');
+}
+
 function runWatchersAuth(watchers) {
   watchers.forEach(async watcher => {
     const { name: watcherName, watch } = watcher;
@@ -57,15 +63,18 @@ function runWatchersAuth(watchers) {
       subscription.snapshot = snapshot;
       stopRunning(id);
 
-      console.table({
-        watcher: watcherName,
-        previousSnapshot: options.snapshot,
-        newSnapshot: snapshot,
-        notifications: notifications
-          .map(notification => `${notification.key} ${notification.message}`)
-          .join(' - '),
-        error,
-      });
+      // TODO: change to config.isDev when that's merged
+      if (process.env.NODE_ENV !== 'production') {
+        console.table({
+          watcher: watcherName,
+          previousSnapshot: snapshotToString(options.snapshot),
+          newSnapshot: snapshotToString(snapshot),
+          notifications: notifications
+            .map(notification => `${notification.key}: ${notification.message}`)
+            .join(' - '),
+          error,
+        });
+      }
 
       if (error)
         console.warn(
