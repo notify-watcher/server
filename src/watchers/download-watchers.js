@@ -15,6 +15,22 @@ function saveWatchers(names, repoTempPath) {
   );
 }
 
+function isWatcherValid(watcher, index) {
+  const { url, branch, commit, watchers } = watcher;
+  const warningMessages = [];
+  if (!url) warningMessages.push(`WARN: No url for i:${index} ${url}`);
+  if (!branch && !commit)
+    warningMessages.push(`WARN: No branch or commit for i:${index} ${url}`);
+  if (!watchers || watchers.length === 0)
+    warningMessages.push(`WARN: No watchers for i:${index} ${url}`);
+
+  if (warningMessages.length > 0) {
+    warningMessages.forEach(message => console.warn(message));
+    return false;
+  }
+  return true;
+}
+
 async function downloadWatchers() {
   if (!config.DOWNLOAD_WATCHERS) return;
   fs.emptyDirSync(TEMP_DIR_PATH);
@@ -27,11 +43,7 @@ async function downloadWatchers() {
       const repoTempPath = `${TEMP_DIR_PATH}/${index}`;
       const { url, branch, commit, watchers } = watcher;
 
-      if (!url) return console.warn(`WARN: No url for i:${index} ${url}`);
-      if (!branch && !commit)
-        return console.warn(`WARN: No branch or commit for i:${index} ${url}`);
-      if (!watchers || watchers.length === 0)
-        return console.warn(`WARN: No watchers for i:${index} ${url}`);
+      if (!isWatcherValid(watcher, index)) return;
 
       const repo = await git.Clone(url, repoTempPath);
       let reference;
@@ -54,7 +66,7 @@ async function downloadWatchers() {
       console.log(
         `i:${index} Saving ${watchersNames} from ${url}@${branch || commit}`,
       );
-      return saveWatchers(watchersNames, repoTempPath);
+      saveWatchers(watchersNames, repoTempPath);
     }),
   );
 
