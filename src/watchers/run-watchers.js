@@ -27,6 +27,13 @@ const Users = [
   },
 ];
 
+const Snapshots = [
+  {
+    watcher: 'gtd',
+    snapshot: {},
+  },
+];
+
 async function isRunning(id) {
   return MOCK_REDIS[id];
 }
@@ -46,6 +53,14 @@ async function usersForWatcher(watcherName) {
 async function updateUserWatcherSnapshot(user, watcherName, snapshot) {
   // eslint-disable-next-line no-param-reassign
   user.subscriptions[watcherName].snapshot = snapshot;
+}
+
+async function getSnapshotForWatcher(watcherName) {
+  return Snapshots.first(({ watcher }) => watcher === watcherName);
+}
+
+async function updateWatcherSnapshot(watcherName, snapshot) {
+  Snapshots.first(({ watcher }) => watcher === watcherName).snapshot = snapshot;
 }
 
 function snapshotToString(snapshot) {
@@ -97,10 +112,40 @@ async function runWatchersAuth(watchers) {
 
 async function runWatchersNoAuth(watchers) {
   watchers.forEach(async watcher => {
-    const { name } = watcher.name;
+    const { name: watcherName, watch } = watcher.name;
     // eslint-disable-next-line no-useless-return
-    if (isRunning(name)) return;
-    // TODO: Run
+    if (await isRunning(watcherName)) return;
+
+    await startRunning(watcherName);
+    const previousSnapshot = await getSnapshotForWatcher(watcherName);
+    const { notifications, error, snapshot } = await execute(watch, {
+      snapshot: previousSnapshot,
+    });
+    await updateWatcherSnapshot(watcherName, snapshot);
+    await stopRunning(watcherName);
+
+    if (notifications.length > 0) {
+      const users = await usersForWatcher(watcherName);
+      users.forEach(() => {
+        // TODO: Send notification to user
+      });
+    }
+
+    // TODO: change to config.isDev when that's merged
+    if (process.env.NODE_ENV !== 'production') {
+      console.table({
+        watcher: watcherName,
+        previousSnapshot: snapshotToString(previousSnapshot),
+        newSnapshot: snapshotToString(snapshot),
+        notifications: notifications
+          .map(notification => `${notification.key}: ${notification.message}`)
+          .join(' - '),
+        error,
+      });
+    }
+
+    if (error)
+      console.warn(`ERR: Found error for watcher ${watcherName} ${error}`);
   });
 }
 
