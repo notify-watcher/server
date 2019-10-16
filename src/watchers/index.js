@@ -1,19 +1,12 @@
 /* eslint-disable no-console */
-const fs = require('fs-extra');
 const { CronJob } = require('cron');
 const { WATCHERS_PATH } = require('../../config');
 const downloadWatchers = require('./download-watchers');
-const loadWatchersList = require('./load-watchers-list');
+const { loadWatchers } = require('./load-watchers');
 const { runWatchersAuth, runWatchersNoAuth } = require('./run-watchers');
 
 async function setUpWatchers() {
   await downloadWatchers();
-
-  const watchersNames = fs
-    .readdirSync(WATCHERS_PATH, { withFileTypes: true })
-    .filter(dirent => dirent.isDirectory())
-    .filter(({ name }) => name[0] !== '.')
-    .map(({ name }) => name);
 
   const {
     watchers,
@@ -21,7 +14,7 @@ async function setUpWatchers() {
     minuteWatchersNoAuth,
     hourWatchersAuth,
     hourWatchersNoAuth,
-  } = loadWatchersList(watchersNames);
+  } = loadWatchers(WATCHERS_PATH);
 
   const minuteWatchersCronJob = new CronJob(
     '0,5,10,15,20,25,30,35,40,45,50,55 * * * * *', // TODO: change to the one below

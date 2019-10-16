@@ -3,6 +3,7 @@ const fs = require('fs-extra');
 const git = require('nodegit');
 const config = require('../../config');
 const { WATCHERS_LIST, ALL_WATCHERS_KEY } = require('./list');
+const { loadWatchersNames } = require('./load-watchers.js');
 
 function ref(branch) {
   return `refs/remotes/origin/${branch}`;
@@ -54,10 +55,7 @@ async function downloadWatchers() {
       }
       await repo.checkoutRef(reference);
 
-      const watchersNames = fs
-        .readdirSync(repoTempPath, { withFileTypes: true })
-        .filter(dirent => dirent.isDirectory())
-        .map(({ name }) => name)
+      const watchersNames = loadWatchersNames(repoTempPath)
         .filter(name => name[0] !== '.')
         .filter(
           name => watchers === ALL_WATCHERS_KEY || watchers.includes(name),

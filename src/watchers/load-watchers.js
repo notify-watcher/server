@@ -1,10 +1,19 @@
+const fs = require('fs-extra');
 const { WATCHERS_PATH } = require('../../config');
 const validateAuth = require('./validate-auth');
 const validateLibs = require('./validate-libs');
 const { TIMEFRAMES, validateTimeframe } = require('./validate-timeframe');
 
-function loadWatchersList(watchersNames) {
-  const watchers = watchersNames
+function loadWatchersNames(path) {
+  return fs
+    .readdirSync(path, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .filter(({ name }) => name[0] !== '.')
+    .map(({ name }) => name);
+}
+
+function loadWatchers(watchersPath) {
+  const watchers = loadWatchersNames(watchersPath)
     .map(name => {
       const path = `${WATCHERS_PATH}/${name}`;
       // eslint-disable-next-line global-require, import/no-dynamic-require
@@ -38,4 +47,4 @@ function loadWatchersList(watchersNames) {
   };
 }
 
-module.exports = loadWatchersList;
+module.exports = { loadWatchers, loadWatchersNames };
