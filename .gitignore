@@ -1,5 +1,5 @@
-watchers
-tmp/watchers
+watchers/
+tmp
 
 # Logs
 logs
