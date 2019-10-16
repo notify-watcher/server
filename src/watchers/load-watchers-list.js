@@ -30,7 +30,7 @@ function loadWatchersList(watchersNames) {
       watcher.config.timeframe.type === TIMEFRAMES.day,
   );
   return {
-    allWatchers: watchers,
+    watchers,
     minuteWatchersAuth: minuteWatchers.filter(({ config: c }) => c.auth),
     minuteWatchersNoAuth: minuteWatchers.filter(({ config: c }) => !c.auth),
     hourWatchersAuth: hourWatchers.filter(({ config: c }) => c.auth),

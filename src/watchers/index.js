@@ -16,7 +16,7 @@ async function setUpWatchers() {
     .map(({ name }) => name);
 
   const {
-    allWatchers,
+    watchers,
     minuteWatchersAuth,
     minuteWatchersNoAuth,
     hourWatchersAuth,
@@ -50,7 +50,7 @@ async function setUpWatchers() {
   console.log('hourWatchersAuth', hourWatchersAuth);
   console.log('hourWatchersNoAuth', hourWatchersNoAuth);
 
-  return { watchers: allWatchers, minuteWatchersCronJob, hourWatchersCronJob };
+  return { watchers, minuteWatchersCronJob, hourWatchersCronJob };
 }
 
 module.exports = setUpWatchers;
