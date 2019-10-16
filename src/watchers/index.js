@@ -27,7 +27,8 @@ async function setUpWatchers() {
   );
 
   const hourWatchersCronJob = new CronJob(
-    '0 0 * * * *',
+    '0,5,10,15,20,25,30,35,40,45,50,55 * * * * *', // TODO: change to the one below
+    // '0 0 * * * *',
     function runHourWatchers() {
       console.log('hour iteration');
       runWatchersAuth(hourWatchersAuth);
