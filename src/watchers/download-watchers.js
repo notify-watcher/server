@@ -2,7 +2,6 @@
 const fs = require('fs-extra');
 const git = require('nodegit');
 const config = require('../../config');
-const { TEMP_DIR_PATH, DOWNLOADED_DIR_PATH } = require('./config');
 const { WATCHERS_LIST, ALL_WATCHERS_KEY } = require('./list');
 
 function ref(branch) {
@@ -11,7 +10,7 @@ function ref(branch) {
 
 function saveWatchers(names, repoTempPath) {
   names.forEach(name =>
-    fs.copySync(`${repoTempPath}/${name}`, `${DOWNLOADED_DIR_PATH}/${name}`),
+    fs.copySync(`${repoTempPath}/${name}`, `${config.WATCHERS_PATH}/${name}`),
   );
 }
 
@@ -33,14 +32,14 @@ function isWatcherValid(watcher, index) {
 
 async function downloadWatchers() {
   if (!config.DOWNLOAD_WATCHERS) return;
-  fs.emptyDirSync(TEMP_DIR_PATH);
-  fs.emptyDirSync(DOWNLOADED_DIR_PATH);
+  fs.emptyDirSync(config.WATCHERS_TEMP_PATH);
+  fs.emptyDirSync(config.WATCHERS_PATH);
   console.table(WATCHERS_LIST);
   console.log();
 
   await Promise.all(
     WATCHERS_LIST.map(async (watcher, index) => {
-      const repoTempPath = `${TEMP_DIR_PATH}/${index}`;
+      const repoTempPath = `${config.WATCHERS_TEMP_PATH}/${index}`;
       const { url, branch, commit, watchers } = watcher;
 
       if (!isWatcherValid(watcher, index)) return;
@@ -70,7 +69,7 @@ async function downloadWatchers() {
     }),
   );
 
-  fs.emptyDirSync(TEMP_DIR_PATH);
+  fs.emptyDirSync(config.WATCHERS_TEMP_PATH);
 }
 
 if (require.main === module) {

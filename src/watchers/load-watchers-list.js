@@ -1,4 +1,4 @@
-const { DOWNLOADED_DIR_PATH } = require('./config');
+const { WATCHERS_PATH } = require('../../config');
 const validateAuth = require('./validate-auth');
 const validateLibs = require('./validate-libs');
 const { TIMEFRAMES, validateTimeframe } = require('./validate-timeframe');
@@ -6,7 +6,7 @@ const { TIMEFRAMES, validateTimeframe } = require('./validate-timeframe');
 function loadWatchersList(watchersNames) {
   const watchers = watchersNames
     .map(name => {
-      const path = `${DOWNLOADED_DIR_PATH}/${name}`;
+      const path = `${WATCHERS_PATH}/${name}`;
       // eslint-disable-next-line global-require, import/no-dynamic-require
       const { config: watcherConfig, checkAuth, watch } = require(path);
       return {
