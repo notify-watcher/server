@@ -9,26 +9,6 @@ const WATCHERS_LIST = [
     branch: 'master',
     watchers: ['gtd', 'github-notifications', 'vtr'],
   },
-  // {
-  //   url: 'https://github.com/notify-watcher/watchers',
-  //   commit: '4e61a833073a56bbe19ff966f09129f6b165f95a',
-  //   watchers: ALL_WATCHERS_KEY,
-  // },
-  {
-    url: 'https://github.com/notify-watcher/watchers',
-    watchers: ALL_WATCHERS_KEY,
-  },
-  {
-    url: 'https://github.com/notify-watcher/watchers',
-    branch: 'master',
-  },
-  {
-    url: 'https://github.com/notify-watcher/watchers',
-    commit: '4e61a833073a56bbe19ff966f09129f6b165f95a',
-  },
-  {
-    commit: '4e61a833073a56bbe19ff966f09129f6b165f95a',
-  },
 ];
 
 module.exports = { WATCHERS_LIST, ALL_WATCHERS_KEY };
