@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
+const util = require('util');
 const { execute } = require('@notify-watcher/core');
+const { TIMEFRAMES } = require('./validate-timeframe');
 
 // Keep track of which watchers are running,
 // use name as a key for no auth watchers
@@ -32,6 +34,10 @@ const Snapshots = [
     watcher: 'gtd',
     snapshot: {},
   },
+  {
+    watcher: 'vtr',
+    snapshot: {},
+  },
 ];
 
 async function isRunning(id) {
@@ -50,27 +56,56 @@ async function usersForWatcher(watcherName) {
   return Users.filter(user => user.subscriptions[watcherName]);
 }
 
+async function getUserWatcherAuth(user, watcherName) {
+  const subscription = user.subscriptions[watcherName];
+  return subscription.auth;
+}
+
+async function getUserWatcherSnapshot(user, watcherName) {
+  const subscription = user.subscriptions[watcherName];
+  return subscription.snapshot;
+}
+
 async function updateUserWatcherSnapshot(user, watcherName, snapshot) {
   // eslint-disable-next-line no-param-reassign
   user.subscriptions[watcherName].snapshot = snapshot;
 }
 
 async function getSnapshotForWatcher(watcherName) {
-  return Snapshots.first(({ watcher }) => watcher === watcherName);
+  return (Snapshots.find(({ watcher }) => watcher === watcherName) || {})
+    .snapshot;
 }
 
 async function updateWatcherSnapshot(watcherName, snapshot) {
-  Snapshots.first(({ watcher }) => watcher === watcherName).snapshot = snapshot;
+  Snapshots.find(({ watcher }) => watcher === watcherName).snapshot = snapshot;
 }
 
-function snapshotToString(snapshot) {
-  return Object.keys(snapshot)
-    .map(key => `${key}: ${snapshot[key]}`)
-    .join(' - ');
+function shouldRunWatcher({ config: { timeframe } }, runDate) {
+  // TODO: For now we will just run daily watchers at the hour in
+  // the timeframe config for all users. Later we should add
+  // logic to notifications so they're sent to each user at
+  // different times.
+  if (
+    timeframe.type === TIMEFRAMES.day &&
+    runDate.getHours() !== timeframe.hour
+  )
+    return false;
+  return true;
+}
+
+function logWatcherIteration(data) {
+  // TODO: change to config.isDev when that's merged
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`\n### Watcher iteration ${data.watcherName}\n`);
+    console.log(util.inspect(data, { showHidden: false, depth: 2 }));
+  }
 }
 
 async function runWatchersAuth(watchers) {
+  const runDate = new Date();
   watchers.forEach(async watcher => {
+    if (!shouldRunWatcher(watcher, runDate)) return;
+
     const { name: watcherName, watch } = watcher;
     const users = await usersForWatcher(watcherName);
     users.forEach(async user => {
@@ -78,27 +113,20 @@ async function runWatchersAuth(watchers) {
       if (await isRunning(id)) return;
 
       await startRunning(id);
-      const subscription = user.subscriptions[watcherName];
       const options = {
-        auth: subscription.auth,
-        snapshot: subscription.snapshot,
+        auth: await getUserWatcherAuth(user, watcherName),
+        snapshot: await getUserWatcherSnapshot(user, watcherName),
       };
       const { notifications, error, snapshot } = await execute(watch, options);
       await updateUserWatcherSnapshot(user, watcherName, snapshot);
       await stopRunning(id);
-
-      // TODO: change to config.isDev when that's merged
-      if (process.env.NODE_ENV !== 'production') {
-        console.table({
-          watcher: watcherName,
-          previousSnapshot: snapshotToString(options.snapshot),
-          newSnapshot: snapshotToString(snapshot),
-          notifications: notifications
-            .map(notification => `${notification.key}: ${notification.message}`)
-            .join(' - '),
-          error,
-        });
-      }
+      logWatcherIteration({
+        watcherName,
+        previousSnapshot: options.snapshot,
+        newSnapshot: snapshot,
+        notifications,
+        error,
+      });
 
       if (error)
         console.warn(
@@ -111,8 +139,11 @@ async function runWatchersAuth(watchers) {
 }
 
 async function runWatchersNoAuth(watchers) {
+  const runDate = new Date();
   watchers.forEach(async watcher => {
-    const { name: watcherName, watch } = watcher.name;
+    if (!shouldRunWatcher(watcher, runDate)) return;
+
+    const { name: watcherName, watch } = watcher;
     // eslint-disable-next-line no-useless-return
     if (await isRunning(watcherName)) return;
 
@@ -123,24 +154,18 @@ async function runWatchersNoAuth(watchers) {
     });
     await updateWatcherSnapshot(watcherName, snapshot);
     await stopRunning(watcherName);
+    logWatcherIteration({
+      watcherName,
+      previousSnapshot,
+      newSnapshot: snapshot,
+      notifications,
+      error,
+    });
 
     if (notifications.length > 0) {
       const users = await usersForWatcher(watcherName);
       users.forEach(() => {
         // TODO: Send notification to user
-      });
-    }
-
-    // TODO: change to config.isDev when that's merged
-    if (process.env.NODE_ENV !== 'production') {
-      console.table({
-        watcher: watcherName,
-        previousSnapshot: snapshotToString(previousSnapshot),
-        newSnapshot: snapshotToString(snapshot),
-        notifications: notifications
-          .map(notification => `${notification.key}: ${notification.message}`)
-          .join(' - '),
-        error,
       });
     }
 
