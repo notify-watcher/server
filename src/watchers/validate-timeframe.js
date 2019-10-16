@@ -1,6 +1,11 @@
 /* eslint-disable no-console */
 const keymirror = require('keymirror');
 
+// TODO: Maybe we should move the keys definition to @notify-watcher/core.
+// Since all watchers will be executed in an env where @notify-watcher/core
+// is installed, we can use it to define the accepted keys for some config
+// fields. Like TIMEFRAMES in this case
+
 const TIMEFRAMES = keymirror({
   minute: null,
   hour: null,
