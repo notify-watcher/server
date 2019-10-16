@@ -43,6 +43,11 @@ async function usersForWatcher(watcherName) {
   return Users.filter(user => user.subscriptions[watcherName]);
 }
 
+async function updateUserWatcherSnapshot(user, watcherName, snapshot) {
+  // eslint-disable-next-line no-param-reassign
+  user.subscriptions[watcherName].snapshot = snapshot;
+}
+
 function snapshotToString(snapshot) {
   return Object.keys(snapshot)
     .map(key => `${key}: ${snapshot[key]}`)
@@ -64,7 +69,7 @@ async function runWatchersAuth(watchers) {
         snapshot: subscription.snapshot,
       };
       const { notifications, error, snapshot } = await execute(watch, options);
-      subscription.snapshot = snapshot;
+      await updateUserWatcherSnapshot(user, watcherName, snapshot);
       await stopRunning(id);
 
       // TODO: change to config.isDev when that's merged
