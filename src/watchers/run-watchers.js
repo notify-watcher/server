@@ -27,16 +27,20 @@ const Users = [
   },
 ];
 
-function isRunning(id) {
+async function isRunning(id) {
   return MOCK_REDIS[id];
 }
 
-function startRunning(id) {
+async function startRunning(id) {
   MOCK_REDIS[id] = true;
 }
 
-function stopRunning(id) {
+async function stopRunning(id) {
   MOCK_REDIS[id] = false;
+}
+
+async function usersForWatcher(watcherName) {
+  return Users.filter(user => user.subscriptions[watcherName]);
 }
 
 function snapshotToString(snapshot) {
@@ -45,15 +49,15 @@ function snapshotToString(snapshot) {
     .join(' - ');
 }
 
-function runWatchersAuth(watchers) {
+async function runWatchersAuth(watchers) {
   watchers.forEach(async watcher => {
     const { name: watcherName, watch } = watcher;
-    const users = Users.filter(user => user.subscriptions[watcherName]);
+    const users = await usersForWatcher(watcherName);
     users.forEach(async user => {
       const id = `${watcherName}:${user.name}`;
-      if (isRunning(id)) return;
+      if (await isRunning(id)) return;
 
-      startRunning(id);
+      await startRunning(id);
       const subscription = user.subscriptions[watcherName];
       const options = {
         auth: subscription.auth,
@@ -61,7 +65,7 @@ function runWatchersAuth(watchers) {
       };
       const { notifications, error, snapshot } = await execute(watch, options);
       subscription.snapshot = snapshot;
-      stopRunning(id);
+      await stopRunning(id);
 
       // TODO: change to config.isDev when that's merged
       if (process.env.NODE_ENV !== 'production') {
@@ -86,7 +90,7 @@ function runWatchersAuth(watchers) {
   });
 }
 
-function runWatchersNoAuth(watchers) {
+async function runWatchersNoAuth(watchers) {
   watchers.forEach(async watcher => {
     const { name } = watcher.name;
     // eslint-disable-next-line no-useless-return
