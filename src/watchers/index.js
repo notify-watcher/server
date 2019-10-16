@@ -24,7 +24,7 @@ async function setUpWatchers() {
   } = loadWatchersList(watchersNames);
 
   const minuteWatchersCronJob = new CronJob(
-    '0,5,10,15,20,25,30,35,40,45,50,55 * * * * *', // change to one below
+    '0,5,10,15,20,25,30,35,40,45,50,55 * * * * *', // TODO: change to the one below
     // '* * * * * *',
     function runMinuteWatchers() {
       console.log('minute iteration');
