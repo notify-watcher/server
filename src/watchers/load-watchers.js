@@ -5,10 +5,10 @@ const validateAuth = require('./validate-auth');
 const validateLibs = require('./validate-libs');
 const { TIMEFRAMES, validateTimeframe } = require('./validate-timeframe');
 
-function loadWatchersNames(path) {
-  if (!fs.existsSync(path)) return [];
+function loadWatchersNames(watchersPath) {
+  if (!fs.existsSync(watchersPath)) return [];
   return fs
-    .readdirSync(path, { withFileTypes: true })
+    .readdirSync(watchersPath, { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
     .filter(({ name }) => name[0] !== '.')
     .map(({ name }) => name);
