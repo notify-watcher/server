@@ -23,6 +23,7 @@
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "dev": "nodemon index.js",
+    "test": "jest",
     "dev:watchers": "DOWNLOAD_WATCHERS=true nodemon index.js",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
@@ -43,8 +44,11 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^6.4.0",
     "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jest": "^22.19.0",
     "eslint-plugin-prettier": "^3.1.1",
+    "jest": "^24.9.0",
     "nodemon": "^1.19.3",
-    "prettier": "^1.18.2"
+    "prettier": "^1.18.2",
+    "supertest": "^4.0.2"
   }
 }
