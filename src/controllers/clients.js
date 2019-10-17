@@ -2,51 +2,55 @@
 
 const emails = require('../emails');
 const User = require('../models/user');
+const config = require('../../config');
 
 class ClientsController {
   async register(ctx) {
-    const { email, clientName } = ctx.request.body;
+    const { email, clientData } = ctx.request.body;
     let user = await User.findOne({ email });
     if (!user) {
       user = await User.create({ email });
       await user.createSecret();
     }
-    try {
-      const token = user.generateToken();
-      const emailResult = await emails.emailSender.send({
-        template: emails.templates.emailConfirmation,
-        message: {
-          to: email,
-        },
-        locals: {
-          email,
-          apiBase: 'http://localhost:3000', // TODO: from config.json maybe?
-          clientName,
-          token,
-        },
-      });
-      console.log('emailResult', emailResult); // TODO: remove this line
-      return {
-        success: true,
-      };
-    } catch (err) {
-      console.error(err);
-      return {
-        success: false,
-      };
-    }
+    const client = await user.addClient(clientData);
+    const token = await user.generateToken();
+    await emails.emailSender.send({
+      template: emails.templates.clientActivation,
+      message: {
+        to: email,
+      },
+      locals: {
+        email,
+        baseUrl: config.BASE_URL,
+        client,
+        token,
+      },
+    });
+    return {
+      success: true,
+    };
   }
 
   async verify(ctx) {
-    const { email, token } = ctx.request.body;
+    const { email, token, clientId } = ctx.request.query;
     const user = await User.findOne({ email });
-    const verification = user.verifyToken(token);
-    if (verification) {
-      console.log('verified');
+    const client = user.clients.id(clientId);
+    if (client === undefined) {
+      console.log('non existent client');
       // TODO
-    } else {
+    }
+    if (client.active) {
+      console.log('client already active');
+      // TODO
+    }
+    const verification = await user.verifyToken(token);
+    if (!verification && false) {
       console.log('invalid token');
       // TODO
+    } else {
+      client.active = true;
+      await user.save();
+      console.log('client activated');
     }
   }
 }
