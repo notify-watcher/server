@@ -20,7 +20,7 @@ async function setUpWatchers() {
     // '0,5,10,15,20,25,30,35,40,45,50,55 * * * * *', // for dev
     '0 * * * * *',
     function runMinuteWatchers() {
-      console.log('minute iteration');
+      console.log(new Date(), 'minute iteration');
       runWatchersAuth(minuteWatchersAuth);
       runWatchersNoAuth(minuteWatchersNoAuth);
     },
@@ -30,7 +30,7 @@ async function setUpWatchers() {
     // '0,5,10,15,20,25,30,35,40,45,50,55 * * * * *', // for dev
     '0 0 * * * *',
     function runHourWatchers() {
-      console.log('hour iteration');
+      console.log(new Date(), 'hour iteration');
       runWatchersAuth(hourWatchersAuth);
       runWatchersNoAuth(hourWatchersNoAuth);
     },
