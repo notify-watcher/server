@@ -44,7 +44,7 @@ class ClientsController {
       // TODO
     }
     const verification = await user.verifyToken(token);
-    if (!verification && false) {
+    if (!verification) {
       console.log('invalid token');
       // TODO
     } else {

@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const schema = require('./schema');
 const last = require('lodash/last');
 
+const TOKEN_TTL = 15 * 60; // 15 minutes (specified in seconds)
+
 class User {
   async createSecret() {
     const secret = speakeasy.generateSecret({ length: 20 });
@@ -22,6 +24,7 @@ class User {
       secret: this.secret,
       encoding: 'base32',
       token,
+      time: TOKEN_TTL,
     });
   }
 
