@@ -1,5 +1,6 @@
-src/watchers/tmp
-src/watchers/downloaded
+/watchers
+tmp
+log
 
 # Logs
 logs

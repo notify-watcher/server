@@ -27,11 +27,13 @@
     "dev:watchers": "DOWNLOAD_WATCHERS=true nodemon index.js",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "download-watchers": "DOWNLOAD_WATCHERS=true node src/watchers/index.js"
+    "download-watchers": "DOWNLOAD_WATCHERS=true node src/watchers/download-watchers.js"
   },
   "dependencies": {
-    "@notify-watcher/core": "0.0.2",
+    "@notify-watcher/core": "0.1.0",
+    "cron": "^1.7.2",
     "fs-extra": "^8.1.0",
+    "keymirror": "^0.1.1",
     "koa": "^2.8.2",
     "koa-logger": "^3.2.1",
     "koa-router": "^7.4.0",

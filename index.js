@@ -18,9 +18,12 @@ app.use(router.allowedMethods());
 const server = app.listen(config.PORT);
 
 async function startup() {
-  await setUpWatchers();
-  // eslint-disable-next-line no-console
-  console.log(config.WATCHERS);
+  // TODO: Setup db connection here
+
+  const { watchers } = await setUpWatchers();
+  config.WATCHERS = watchers;
+
+  // TODO: Start api here
 }
 
 startup();
