@@ -17,7 +17,7 @@ const Users = [
           token: process.env.GITHUB_NOTIFICATIONS_TOKEN,
         },
         notificationTypes: {
-          subscribed: ['clientIdd'],
+          subscribed: ['clientId'],
         },
         snapshot: {},
       },
