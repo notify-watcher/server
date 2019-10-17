@@ -5,6 +5,7 @@ const validateLibs = require('./validate-libs');
 const { TIMEFRAMES, validateTimeframe } = require('./validate-timeframe');
 
 function loadWatchersNames(path) {
+  if (!fs.existsSync(path)) return [];
   return fs
     .readdirSync(path, { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
