@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 const fs = require('fs-extra');
+const path = require('path');
 const git = require('nodegit');
 const config = require('../../config');
 const { WATCHERS_LIST, ALL_WATCHERS_KEY } = require('./list');
@@ -11,7 +12,10 @@ function ref(branch) {
 
 function saveWatchers(names, repoTempPath) {
   names.forEach(name =>
-    fs.copySync(`${repoTempPath}/${name}`, `${config.WATCHERS_PATH}/${name}`),
+    fs.copySync(
+      path.join(repoTempPath, name),
+      path.join(config.WATCHERS_PATH, name),
+    ),
   );
 }
 
