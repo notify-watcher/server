@@ -1,4 +1,5 @@
 const fs = require('fs-extra');
+const path = require('path');
 const { WATCHERS_PATH } = require('../../config');
 const validateAuth = require('./validate-auth');
 const validateLibs = require('./validate-libs');
@@ -16,15 +17,15 @@ function loadWatchersNames(path) {
 function loadWatchers(watchersPath) {
   const watchers = loadWatchersNames(watchersPath)
     .map(name => {
-      const path = `${WATCHERS_PATH}/${name}`;
+      const watcherPath = path.join(WATCHERS_PATH, name);
       // eslint-disable-next-line global-require, import/no-dynamic-require
-      const { config: watcherConfig, checkAuth, watch } = require(path);
+      const { config: watcherConfig, checkAuth, watch } = require(watcherPath);
       return {
         config: watcherConfig,
         checkAuth,
         watch,
         name,
-        path,
+        path: watcherPath,
       };
     })
     .filter(validateAuth)
