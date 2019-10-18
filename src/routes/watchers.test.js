@@ -1,4 +1,4 @@
-const request = require('./supertest');
+const request = require('../../lib/supertest');
 
 describe('watchers route tests', () => {
   test('get all watchers  GET /watchers', async () => {
