@@ -1,6 +1,6 @@
 const config = require('./config');
-const setUpWatchers = require('./src/watchers');
-const app = require('./src/app');
+const setUpWatchers = require('./watchers');
+const app = require('./app');
 
 async function startup() {
   await mongoose.connect(config.DATABASE_URL);
