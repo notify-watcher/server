@@ -1,12 +1,9 @@
-class WatchersController {
-  /**
-   * Get all watchers
-   * @param {ctx} Koa Context
-   */
-  // eslint-disable-next-line class-methods-use-this
-  async find(ctx) {
-    ctx.body = [];
-  }
+const config = require('../../config');
+
+async function find(ctx) {
+  ctx.body = config.WATCHERS;
 }
 
-module.exports = new WatchersController();
+module.exports = {
+  find,
+};
