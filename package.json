@@ -34,6 +34,7 @@
     "@notify-watcher/core": "^0.3.0",
     "@notify-watcher/executor": "^0.1.0",
     "cron": "^1.7.2",
+    "email-templates": "^6.0.3",
     "fs-extra": "^8.1.0",
     "http-errors": "^1.7.3",
     "keymirror": "^0.1.1",
@@ -44,6 +45,7 @@
     "lodash": "^4.17.15",
     "mongoose": "^5.7.4",
     "nodegit": "^0.26.2",
+    "path": "^0.12.7",
     "speakeasy": "^2.0.0",
     "supertest": "^4.0.2"
   },
