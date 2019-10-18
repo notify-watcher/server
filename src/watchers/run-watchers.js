@@ -1,7 +1,9 @@
 /* eslint-disable no-console */
 const util = require('util');
-const { execute } = require('@notify-watcher/core');
-const { TIMEFRAMES } = require('./validate-timeframe');
+const {
+  execute,
+  constants: { TIMEFRAMES },
+} = require('@notify-watcher/core');
 
 // Keep track of which watchers are running,
 // use name as a key for no auth watchers

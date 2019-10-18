@@ -1,9 +1,10 @@
 const fs = require('fs-extra');
 const path = require('path');
+const {
+  constants: { TIMEFRAMES },
+  validators: { validateAuth, validateLibs, validateTimeframe },
+} = require('@notify-watcher/core');
 const { WATCHERS_PATH } = require('../../config');
-const validateAuth = require('./validate-auth');
-const validateLibs = require('./validate-libs');
-const { TIMEFRAMES, validateTimeframe } = require('./validate-timeframe');
 
 function loadWatchersNames(watchersPath) {
   if (!fs.existsSync(watchersPath)) return [];
@@ -28,9 +29,9 @@ function loadWatchers(watchersPath) {
         path: watcherPath,
       };
     })
-    .filter(validateAuth)
-    .filter(validateLibs)
-    .filter(validateTimeframe);
+    .filter(({ config, name }) => validateAuth(config.auth, name))
+    .filter(({ config, name }) => validateLibs(config.libs, name))
+    .filter(({ config, name }) => validateTimeframe(config.timeframe, name));
 
   const minuteWatchers = watchers.filter(
     watcher => watcher.config.timeframe.type === TIMEFRAMES.minute,
