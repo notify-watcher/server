@@ -29,9 +29,9 @@ function loadWatchers(watchersPath) {
         path: watcherPath,
       };
     })
-    .filter(validateAuth)
-    .filter(validateLibs)
-    .filter(validateTimeframe);
+    .filter(({ config, name }) => validateAuth(config.auth, name))
+    .filter(({ config, name }) => validateLibs(config.libs, name))
+    .filter(({ config, name }) => validateTimeframe(config.timeframe, name));
 
   const minuteWatchers = watchers.filter(
     watcher => watcher.config.timeframe.type === TIMEFRAMES.minute,
