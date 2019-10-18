@@ -1,5 +1,5 @@
 module.exports = ({ baseRouter }) => {
-  baseRouter.get('/', (ctx, next) => {
+  baseRouter.get('/', ctx => {
     ctx.body = 'Hello World!';
   });
 };
