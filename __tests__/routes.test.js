@@ -13,3 +13,10 @@ describe('basic route tests', () => {
     expect(response.text).toContain('Hello World!');
   });
 });
+
+describe('watchers route tests', () => {
+  test('get all watchers  GET /watchers', async () => {
+    const response = await request(server).get('/watchers');
+    expect(response.status).toEqual(200);
+  });
+});
