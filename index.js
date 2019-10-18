@@ -7,10 +7,10 @@ const config = require('./config');
 const app = new Koa();
 
 const baseRouter = new Router();
-require('./routes/base')({ baseRouter });
+require('./src/routes/base')({ baseRouter });
 
 const watchersRouter = new Router({ prefix: '/watchers' });
-require('./routes/watchers')({ watchersRouter });
+require('./src/routes/watchers')({ watchersRouter });
 
 const routers = [baseRouter, watchersRouter];
 
