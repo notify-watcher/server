@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 const { CronJob } = require('cron');
-const { WATCHERS_PATH } = require('../../config');
+const { WATCHERS_PATH } = require('../config');
 const downloadWatchers = require('./download-watchers');
 const { loadWatchers } = require('./load-watchers');
 const { runWatchersAuth, runWatchersNoAuth } = require('./run-watchers');

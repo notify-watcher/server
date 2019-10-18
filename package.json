@@ -2,7 +2,7 @@
   "name": "@notify-watcher/server",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "repository": "https://github.com/notify-watcher/server.git",
   "author": {
     "name": "Francisco Sandoval",
@@ -22,10 +22,10 @@
   ],
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "dev": "nodemon index.js",
+    "dev": "nodemon src/index.js",
     "test": "jest --watchAll",
     "test:ci": "jest",
-    "dev:watchers": "DOWNLOAD_WATCHERS=true nodemon index.js",
+    "dev:watchers": "DOWNLOAD_WATCHERS=true nodemon src/index.js",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "download-watchers": "DOWNLOAD_WATCHERS=true node src/watchers/download-watchers.js"
@@ -38,7 +38,9 @@
     "koa": "^2.8.2",
     "koa-logger": "^3.2.1",
     "koa-router": "^7.4.0",
-    "nodegit": "^0.26.2"
+    "mongoose": "^5.7.4",
+    "nodegit": "^0.26.2",
+    "supertest": "^4.0.2"
   },
   "devDependencies": {
     "eslint": "^6.5.1",
@@ -49,7 +51,6 @@
     "eslint-plugin-prettier": "^3.1.1",
     "jest": "^24.9.0",
     "nodemon": "^1.19.3",
-    "prettier": "^1.18.2",
-    "supertest": "^4.0.2"
+    "prettier": "^1.18.2"
   }
 }
