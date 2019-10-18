@@ -10,7 +10,6 @@ const schema = new Schema({
     required: true,
     index: true,
   },
-  active: Boolean,
 });
 
 module.exports = schema;

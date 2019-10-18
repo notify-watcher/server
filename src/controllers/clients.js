@@ -1,58 +1,24 @@
-/* eslint-disable class-methods-use-this, no-console */
-
-const emails = require('../emails');
 const User = require('../models/user');
-const config = require('../../config');
 
-class ClientsController {
-  async register(ctx) {
-    const { email, clientData } = ctx.request.body;
-    let user = await User.findOne({ email });
-    if (!user) {
-      user = await User.create({ email });
-      await user.createSecret();
-    }
-    const client = await user.addClient(clientData);
-    const token = await user.generateToken();
-    await emails.emailSender.send({
-      template: emails.templates.clientActivation,
-      message: {
-        to: email,
-      },
-      locals: {
-        email,
-        baseUrl: config.BASE_URL,
-        client,
-        token,
-      },
-    });
-    return {
-      success: true,
-    };
+async function register(ctx) {
+  const { email, token, clientData } = ctx.request.body;
+  let user = await User.findOne({ email });
+  if (!user) {
+    console.log('email does not exists');
+    return;
   }
-
-  async verify(ctx) {
-    const { email, token, clientId } = ctx.request.query;
-    const user = await User.findOne({ email });
-    const client = user.clients.id(clientId);
-    if (client === undefined) {
-      console.log('non existent client');
-      // TODO
-    }
-    if (client.active) {
-      console.log('client already active');
-      // TODO
-    }
-    const verification = await user.verifyToken(token);
-    if (!verification) {
-      console.log('invalid token');
-      // TODO
-    } else {
-      client.active = true;
-      await user.save();
-      console.log('client activated');
-    }
+  const verification = await user.verifyToken(token);
+  if (!verification) {
+    console.log('invalid token');
+    return;
+    // TODO
   }
+  const client = await user.addClient(clientData);
+  return {
+    client,
+  };
 }
 
-module.exports = new ClientsController();
+module.exports = {
+  register,
+};

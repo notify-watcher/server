@@ -16,6 +16,7 @@ class User {
     return speakeasy.totp({
       secret: this.secret,
       encoding: 'base32',
+      step: TOKEN_TTL,
     });
   }
 
@@ -24,12 +25,11 @@ class User {
       secret: this.secret,
       encoding: 'base32',
       token,
-      time: TOKEN_TTL,
+      step: TOKEN_TTL,
     });
   }
 
   async addClient(clientData) {
-    clientData.active = false;
     this.clients.push(clientData);
     await this.save();
     return last(this.clients);

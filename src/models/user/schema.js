@@ -10,10 +10,11 @@ const schema = new Schema({
   email: {
     type: String,
     required: true,
+    index: true,
   },
   secret: Schema.Types.String,
   clients: [ClientSchema],
-  subscriptions: Schema.Types.Mixed,
+  subscriptions: [Schema.Types.Mixed],
 });
 
 module.exports = schema;

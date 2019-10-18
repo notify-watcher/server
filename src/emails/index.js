@@ -23,6 +23,6 @@ function buildPath(emailFolder) {
 module.exports = {
   emailSender,
   templates: {
-    clientActivation: buildPath('client-activation'),
+    sendToken: buildPath('send-token'),
   },
 };
