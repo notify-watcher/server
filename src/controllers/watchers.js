@@ -1,9 +1,9 @@
 const config = require('../../config');
 
-async function find(ctx) {
+async function list(ctx) {
   ctx.body = config.WATCHERS;
 }
 
 module.exports = {
-  find,
+  list,
 };
