@@ -22,7 +22,7 @@ const config = {
   },
   PORT,
   DATABASE_URL: databaseUrl(),
-  DOWNLOAD_WATCHERS: DOWNLOAD_WATCHERS || false,
+  DOWNLOAD_WATCHERS: DOWNLOAD_WATCHERS,
   WATCHERS: [],
   WATCHERS_TEMP_PATH: path.resolve(path.join(TEMP_DIR_PATH, 'watchers')),
   WATCHERS_PATH: path.resolve(path.join('.', 'watchers')),
