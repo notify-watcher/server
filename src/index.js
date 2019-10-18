@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const config = require('./config');
 const setUpWatchers = require('./watchers');
 const app = require('./app');
