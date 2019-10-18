@@ -2,7 +2,7 @@ const path = require('path');
 
 const TEMP_DIR_PATH = path.resolve(path.join('.', 'tmp'));
 
-const { NODE_ENV, DATABASE_URL, PORT = 3000, DOWNLOAD_WATCHERS } = process.env;
+const { NODE_ENV, DATABASE_URL, PORT = 3000, DOWNLOAD_WATCHERS = false } = process.env;
 
 const isDev = NODE_ENV === 'development';
 const isTest = NODE_ENV === 'test';
