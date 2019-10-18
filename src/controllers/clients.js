@@ -2,7 +2,7 @@ const User = require('../models/user');
 
 async function register(ctx) {
   const { email, token, clientData } = ctx.request.body;
-  let user = await User.findOne({ email });
+  const user = await User.findOne({ email });
   if (!user) {
     console.log('email does not exists');
     return;

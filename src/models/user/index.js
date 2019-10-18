@@ -1,7 +1,7 @@
 const speakeasy = require('speakeasy');
 const mongoose = require('mongoose');
-const schema = require('./schema');
 const last = require('lodash/last');
+const schema = require('./schema');
 
 const TOKEN_TTL = 15 * 60; // 15 minutes (specified in seconds)
 

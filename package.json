@@ -38,11 +38,13 @@
     "http-errors": "^1.7.3",
     "keymirror": "^0.1.1",
     "koa": "^2.8.2",
+    "koa-bodyparser": "^4.2.1",
     "koa-logger": "^3.2.1",
     "koa-router": "^7.4.0",
     "lodash": "^4.17.15",
     "mongoose": "^5.7.4",
     "nodegit": "^0.26.2",
+    "speakeasy": "^2.0.0",
     "supertest": "^4.0.2"
   },
   "devDependencies": {
