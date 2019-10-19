@@ -49,6 +49,13 @@ jobs:
       - node_bootstrap
       - run: npm run test:ci
 
+  download-watchers:
+    description: Run the linter
+    executor: node_executor
+    steps:
+      - node_bootstrap
+      - run: npm run download-watchers
+
 workflows:
   version: 2
   commit:
@@ -58,5 +65,8 @@ workflows:
           requires:
             - bootstrap
       - test:
+          requires:
+            - bootstrap
+      - download-watchers:
           requires:
             - bootstrap
