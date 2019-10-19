@@ -42,7 +42,9 @@ jobs:
 
   test:
     description: Run tests
-    executor: node_executor
+    docker:
+      - image: *node-docker-image
+      - image: mongo:3.4.3
     steps:
       - node_bootstrap
       - run: npm run test:ci

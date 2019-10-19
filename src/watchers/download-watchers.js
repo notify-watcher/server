@@ -2,7 +2,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 const git = require('nodegit');
-const config = require('../../config');
+const config = require('../config');
 const { WATCHERS_LIST, ALL_WATCHERS_KEY } = require('./list');
 const { loadWatchersNames } = require('./load-watchers.js');
 

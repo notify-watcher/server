@@ -4,7 +4,7 @@ const {
   constants: { TIMEFRAMES },
   validators: { validateAuth, validateLibs, validateTimeframe },
 } = require('@notify-watcher/core');
-const { WATCHERS_PATH } = require('../../config');
+const { WATCHERS_PATH } = require('../config');
 const executor = require('./executor');
 
 function loadWatchersNames(watchersPath) {
