@@ -3,7 +3,7 @@ const path = require('path');
 const TEMP_DIR_PATH = path.resolve(path.join('.', 'tmp'));
 
 const {
-  NODE_ENV,
+  NODE_ENV = 'development',
   DATABASE_URL,
   PORT = 3000,
   DOWNLOAD_WATCHERS = false,
