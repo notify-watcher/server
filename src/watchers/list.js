@@ -23,8 +23,8 @@ const ALL_WATCHERS_KEY = 'all';
 const WATCHERS_LIST = [
   {
     url: 'https://github.com/notify-watcher/watchers',
-    branch: 'master',
-    watchers: ['gtd', 'github-notifications', 'vtr'],
+    branch: 'watcher-unired-tag-total',
+    watchers: ['gtd', 'github-notifications', 'vtr', 'unired-tag'],
   },
 ];
 
