@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+const util = require('util');
 const fs = require('fs-extra');
 const path = require('path');
 const git = require('nodegit');
@@ -39,7 +40,7 @@ async function downloadWatchers() {
   if (!config.DOWNLOAD_WATCHERS) return;
   fs.emptyDirSync(config.WATCHERS_TEMP_PATH);
   fs.emptyDirSync(config.WATCHERS_PATH);
-  console.table(WATCHERS_LIST);
+  console.log(util.inspect(WATCHERS_LIST, { showHidden: false, depth: 2 }));
   console.log();
 
   await Promise.all(
