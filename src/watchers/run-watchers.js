@@ -3,6 +3,7 @@ const util = require('util');
 const {
   constants: { TIMEFRAMES },
 } = require('@notify-watcher/core');
+const { env } = require('../config.js');
 const executor = require('./executor');
 
 // Keep track of which watchers are running,
@@ -96,8 +97,7 @@ function shouldRunWatcher({ config: { timeframe } }, runDate) {
 }
 
 function logWatcherIteration(data) {
-  // TODO: change to config.isDev when that's merged
-  if (process.env.NODE_ENV !== 'production') {
+  if (env.isDev) {
     console.log(`\n### Watcher iteration ${data.watcherName}\n`);
     console.log(util.inspect(data, { showHidden: false, depth: 2 }));
   }
