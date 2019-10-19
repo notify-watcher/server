@@ -31,7 +31,7 @@
     "download-watchers": "DOWNLOAD_WATCHERS=true node src/watchers/download-watchers.js"
   },
   "dependencies": {
-    "@notify-watcher/core": "^0.2.0",
+    "@notify-watcher/core": "^0.3.0",
     "cron": "^1.7.2",
     "fs-extra": "^8.1.0",
     "keymirror": "^0.1.1",
