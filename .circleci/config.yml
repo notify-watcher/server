@@ -54,7 +54,7 @@ jobs:
     executor: node_executor
     steps:
       - node_bootstrap
-      - run: npm run download-watchers
+      - run: sudo npm run download-watchers
 
 workflows:
   version: 2
