@@ -3,7 +3,7 @@ const util = require('util');
 const {
   constants: { TIMEFRAMES },
 } = require('@notify-watcher/core');
-const { env } = require('../../config.js');
+const { env } = require('../config.js');
 const executor = require('./executor');
 
 // Keep track of which watchers are running,
