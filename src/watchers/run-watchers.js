@@ -24,6 +24,15 @@ const Users = [
         },
         snapshot: {},
       },
+      'unired-tag': {
+        auth: {
+          rut: process.env.RUT,
+        },
+        notificationTypes: {
+          updatedBallot: ['clientId'],
+        },
+        snapshot: {},
+      },
     },
   },
   {
