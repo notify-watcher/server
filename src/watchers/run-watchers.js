@@ -44,7 +44,9 @@ const Snapshots = [
 ];
 
 async function isRunning(id) {
-  return MOCK_REDIS[id];
+  const watcherIsRunning = MOCK_REDIS[id];
+  if (watcherIsRunning) console.log(`Watcher already running: ${id}`);
+  return watcherIsRunning;
 }
 
 async function startRunning(id) {
