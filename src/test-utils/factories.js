@@ -1,7 +1,12 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const { Factory } = require('rosie');
+const keyMirror = require('keymirror');
 
-Factory.define('koa-ctx').attrs({
+const factoryNames = keyMirror({
+  koaCtx: null,
+});
+
+Factory.define(factoryNames.koaCtx).attrs({
   assert: () =>
     jest.fn((assertion, error) => {
       if (assertion) return;
@@ -20,4 +25,7 @@ Factory.define('koa-ctx').attrs({
     }),
 });
 
-module.exports = Factory;
+module.exports = {
+  Factory,
+  factoryNames,
+};

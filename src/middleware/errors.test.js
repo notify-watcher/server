@@ -1,6 +1,6 @@
 const createError = require('http-errors');
-const Factory = require('../test-utils/factories');
-const errorsMiddleware = require('./errors');
+const { Factory, factoryNames } = require('../test-utils/factories');
+const { errorsMiddleware, defaultErrorMessage } = require('./errors');
 
 describe('errorsMiddleware', () => {
   const dummyRequest = {};
@@ -12,14 +12,14 @@ describe('errorsMiddleware', () => {
   }
 
   describe('when no status code is specified', () => {
-    const ctx = Factory.build('koa-ctx', { request: dummyRequest });
+    const ctx = Factory.build(factoryNames.koaCtx, { request: dummyRequest });
     const error = new Error(customErrorMessage);
     const next = () => {
       throw error;
     };
 
     it('returns a body with the default error message', () => {
-      return expectToHaveErrorMessage(ctx, next, ctx.t('errors.default'));
+      return expectToHaveErrorMessage(ctx, next, defaultErrorMessage);
     });
 
     it('returns a status 500', () => {
@@ -29,14 +29,14 @@ describe('errorsMiddleware', () => {
 
   describe('when a status code of 500 is specified', () => {
     const status = 500;
-    const ctx = Factory.build('koa-ctx', { request: dummyRequest });
+    const ctx = Factory.build(factoryNames.koaCtx, { request: dummyRequest });
     const error = new createError[status](customErrorMessage);
     const next = () => {
       throw error;
     };
 
     it('returns a body with the default error message', () => {
-      return expectToHaveErrorMessage(ctx, next, ctx.t('errors.default'));
+      return expectToHaveErrorMessage(ctx, next, defaultErrorMessage);
     });
 
     it('returns the status', () => {
@@ -46,7 +46,7 @@ describe('errorsMiddleware', () => {
 
   describe('when a status code different from 500 is specified', () => {
     const status = 400;
-    const ctx = Factory.build('koa-ctx');
+    const ctx = Factory.build(factoryNames.koaCtx);
     const next = () => {
       throw new createError[status](customErrorMessage);
     };
