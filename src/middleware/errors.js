@@ -15,7 +15,7 @@ module.exports = async function errorsMiddleware(ctx, next) {
       message:
         ctx.status !== 500 && err.message
           ? err.message
-          : ctx.t('errors.default'),
+          : 'Server error',
     };
   }
 };
