@@ -1,7 +1,7 @@
 const emails = require('../emails');
 const User = require('../models/user');
 
-async function sendToken(ctx, next) {
+async function sendToken(ctx) {
   const { email } = ctx.request.body;
   let newUser = false;
   let user = await User.findOne({ email });
@@ -24,7 +24,6 @@ async function sendToken(ctx, next) {
     email,
     newUser,
   };
-  next();
 }
 
 module.exports = {
