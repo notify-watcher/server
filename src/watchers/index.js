@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 const { CronJob } = require('cron');
-const { WATCHERS_PATH } = require('../config');
+const { env, WATCHERS_PATH } = require('../config');
 const downloadWatchers = require('./download-watchers');
 const { loadWatchers } = require('./load-watchers');
 const { runWatchersAuth, runWatchersNoAuth } = require('./run-watchers');
@@ -36,13 +36,15 @@ async function setUpWatchers() {
     },
   );
 
-  minuteWatchersCronJob.start();
-  hourWatchersCronJob.start();
+  if (env.isProd || env.isDev) {
+    minuteWatchersCronJob.start();
+    hourWatchersCronJob.start();
 
-  console.log('minuteWatchersAuth', minuteWatchersAuth);
-  console.log('minuteWatchersNoAuth', minuteWatchersNoAuth);
-  console.log('hourWatchersAuth', hourWatchersAuth);
-  console.log('hourWatchersNoAuth', hourWatchersNoAuth);
+    console.log('minuteWatchersAuth', minuteWatchersAuth);
+    console.log('minuteWatchersNoAuth', minuteWatchersNoAuth);
+    console.log('hourWatchersAuth', hourWatchersAuth);
+    console.log('hourWatchersNoAuth', hourWatchersNoAuth);
+  }
 
   return { watchers, minuteWatchersCronJob, hourWatchersCronJob };
 }

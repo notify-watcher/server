@@ -5,6 +5,7 @@ const {
   validators: { validateAuth, validateLibs, validateTimeframe },
 } = require('@notify-watcher/core');
 const { WATCHERS_PATH } = require('../config');
+const executor = require('./executor');
 
 function loadWatchersNames(watchersPath) {
   if (!fs.existsSync(watchersPath)) return [];
@@ -30,7 +31,7 @@ function loadWatchers(watchersPath) {
       };
     })
     .filter(({ config, name }) => validateAuth(config.auth, name))
-    .filter(({ config, name }) => validateLibs(config.libs, name))
+    .filter(({ config, name }) => validateLibs(executor, config.libs, name))
     .filter(({ config, name }) => validateTimeframe(config.timeframe, name));
 
   const minuteWatchers = watchers.filter(

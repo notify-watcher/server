@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
 const util = require('util');
 const {
-  execute,
   constants: { TIMEFRAMES },
 } = require('@notify-watcher/core');
+const { env } = require('../config.js');
+const executor = require('./executor');
 
 // Keep track of which watchers are running,
 // use name as a key for no auth watchers
@@ -96,8 +97,7 @@ function shouldRunWatcher({ config: { timeframe } }, runDate) {
 }
 
 function logWatcherIteration(data) {
-  // TODO: change to config.isDev when that's merged
-  if (process.env.NODE_ENV !== 'production') {
+  if (env.isDev) {
     console.log(`\n### Watcher iteration ${data.watcherName}\n`);
     console.log(util.inspect(data, { showHidden: false, depth: 2 }));
   }
@@ -115,16 +115,17 @@ async function runWatchersAuth(watchers) {
       if (await isRunning(id)) return;
 
       await startRunning(id);
-      const options = {
-        auth: await getUserWatcherAuth(user, watcherName),
-        snapshot: await getUserWatcherSnapshot(user, watcherName),
-      };
-      const { notifications, error, snapshot } = await execute(watch, options);
+      const auth = await getUserWatcherAuth(user, watcherName);
+      const previousSnapshot = await getUserWatcherSnapshot(user, watcherName);
+      const { notifications, error, snapshot } = await executor.run(watch, {
+        auth,
+        snapshot: previousSnapshot,
+      });
       await updateUserWatcherSnapshot(user, watcherName, snapshot);
       await stopRunning(id);
       logWatcherIteration({
         watcherName,
-        previousSnapshot: options.snapshot,
+        previousSnapshot,
         newSnapshot: snapshot,
         notifications,
         error,
@@ -151,7 +152,7 @@ async function runWatchersNoAuth(watchers) {
 
     await startRunning(watcherName);
     const previousSnapshot = await getSnapshotForWatcher(watcherName);
-    const { notifications, error, snapshot } = await execute(watch, {
+    const { notifications, error, snapshot } = await executor.run(watch, {
       snapshot: previousSnapshot,
     });
     await updateWatcherSnapshot(watcherName, snapshot);
