@@ -1,4 +1,4 @@
-const { Executor } = require('@notify-watcher/core');
+const { Executor } = require('@notify-watcher/executor');
 
 const executor = new Executor();
 
