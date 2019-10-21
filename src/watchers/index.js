@@ -40,6 +40,7 @@ async function setUpWatchers() {
     minuteWatchersCronJob.start();
     hourWatchersCronJob.start();
 
+    console.log('');
     console.log('minuteWatchersAuth', minuteWatchersAuth);
     console.log('minuteWatchersNoAuth', minuteWatchersNoAuth);
     console.log('hourWatchersAuth', hourWatchersAuth);
