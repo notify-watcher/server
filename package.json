@@ -34,6 +34,7 @@
     "@notify-watcher/core": "^0.3.0",
     "cron": "^1.7.2",
     "fs-extra": "^8.1.0",
+    "http-errors": "^1.7.3",
     "keymirror": "^0.1.1",
     "koa": "^2.8.2",
     "koa-logger": "^3.2.1",
@@ -51,6 +52,7 @@
     "eslint-plugin-prettier": "^3.1.1",
     "jest": "^24.9.0",
     "nodemon": "^1.19.3",
-    "prettier": "^1.18.2"
+    "prettier": "^1.18.2",
+    "rosie": "^2.0.1"
   }
 }
