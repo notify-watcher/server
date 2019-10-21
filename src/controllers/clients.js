@@ -1,4 +1,4 @@
-let createError = require('http-errors');
+const createError = require('http-errors');
 const User = require('../models/user');
 
 async function register(ctx) {
