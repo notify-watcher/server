@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 const { Schema } = mongoose;
 
 // To fix https://github.com/Automattic/mongoose/issues/4291
