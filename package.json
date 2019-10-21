@@ -24,13 +24,14 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "dev:watchers": "DOWNLOAD_WATCHERS=true nodemon src/index.js",
-    "start": "node src/index.js",
-    "test:ci": "jest",
+    "download-watchers": "DOWNLOAD_WATCHERS=true node src/watchers/download-watchers.js",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "download-watchers": "DOWNLOAD_WATCHERS=true node src/watchers/download-watchers.js",
+    "postrelease": "git push --follow-tags",
     "release": "standard-version",
-    "postrelease": "git push --follow-tags"
+    "start": "node src/index.js",
+    "test:ci": "jest",
+    "test": "jest --watchAll"
   },
   "dependencies": {
     "@notify-watcher/core": "^0.3.0",
