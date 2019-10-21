@@ -22,9 +22,10 @@
   ],
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "build": "docker build -t notifywatcher/server -t notifywatcher/server:$(git describe 2> /dev/null || echo 'latest') .",
     "dev": "nodemon src/index.js",
     "dev:watchers": "DOWNLOAD_WATCHERS=true nodemon src/index.js",
+    "docker:build": "DOCKER_BUILDKIT=1 docker build -t notifywatcher/server -t notifywatcher/server:$(git describe 2> /dev/null || echo 'latest') --progress=auto --secret id=npmrc,src=$HOME/.npmrc .",
+    "docker:run": "npm run docker:build && docker-compose up",
     "download-watchers": "DOWNLOAD_WATCHERS=true node src/watchers/download-watchers.js",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
