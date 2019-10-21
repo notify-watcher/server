@@ -24,7 +24,7 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "dev:watchers": "DOWNLOAD_WATCHERS=true nodemon src/index.js",
-    "test": "jest --watchAll",
+    "start": "node src/index.js",
     "test:ci": "jest",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
