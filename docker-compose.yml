@@ -1,0 +1,21 @@
+# For running locally
+
+version: '3'
+services:
+  server:
+    image: notifywatcher/server
+    restart: on-failure
+    command: ['./wait-for-it.sh', 'mongo:27017', '--', 'npm', 'run', 'start']
+    environment:
+      - DATABASE_URL=mongodb://mongo/notify-watcher
+    ports:
+      - '3000:80'
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - './tmp/mongodb/db:/data/db'
