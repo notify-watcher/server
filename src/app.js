@@ -5,7 +5,7 @@ const config = require('./config');
 const { errorsMiddleware } = require('./middleware');
 
 const app = new Koa();
-if (!config.env.isTest) {
+if (config.env.isDev || config.env.isProd) {
   app.use(logger());
 }
 app.use(errorsMiddleware);
