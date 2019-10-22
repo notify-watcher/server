@@ -66,7 +66,8 @@ jobs:
     steps:
       - node_bootstrap
       - login_github_package_registry
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 18.09.3
       - run: npm run docker:build
       - run: echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
       - run: npm run docker:push
