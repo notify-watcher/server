@@ -64,7 +64,7 @@ jobs:
     description: Build docker image and push it
     executor: node_executor
     steps:
-      - node_bootstrap
+      - checkout
       - login_github_package_registry
       - setup_remote_docker:
           version: 18.09.3
