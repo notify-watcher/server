@@ -1,4 +1,4 @@
-image$(. scripts/docker_image.sh)
+image=$(. scripts/docker_image.sh)
 tag=$(. scripts/docker_tag.sh)
 
 DOCKER_BUILDKIT=1 docker build \
