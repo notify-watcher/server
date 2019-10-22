@@ -7,7 +7,7 @@ async function register(ctx) {
     createError.NotFound('No user has this email'),
   );
   const verification = await user.verifyToken(token);
-  if (!verification) throw createError.Unauthorized('Invalid code');
+  ctx.assert(verification, createError.Unauthorized('Invalid code'));
   const client = await user.addClient(clientData);
   ctx.body = { client };
 }
