@@ -2,6 +2,7 @@
 
 FROM node:12.12
 
+ENV PORT=3000
 ENV NODE_ENV=production
 
 WORKDIR /server
