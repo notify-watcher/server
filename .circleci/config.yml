@@ -17,6 +17,12 @@ commands:
           keys:
             - *node-cache-key
             - node-v1-
+  login_github_package_registry:
+    description: Adds token for accessing github package registry
+    steps:
+      - run:
+          name: Login to github package registry
+          command: . .circleci/login_github_package_registry.sh
 
 jobs:
   bootstrap:
@@ -24,9 +30,7 @@ jobs:
     executor: node_executor
     steps:
       - node_bootstrap
-      - run:
-          name: Login to github package registry
-          command: . .circleci/login_github_package_registry.sh
+      - login_github_package_registry
       - run: npm install
       - save_cache:
           key: *node-cache-key
@@ -56,6 +60,18 @@ jobs:
       - node_bootstrap
       - run: sudo npm run download-watchers
 
+  build_push:
+    description: Build docker image and push it
+    executor: node_executor
+    steps:
+      - checkout
+      - login_github_package_registry
+      - setup_remote_docker:
+          version: 18.09.3
+      - run: npm run docker:build
+      - run: echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+      - run: npm run docker:push
+
 workflows:
   version: 2
   commit:
@@ -70,3 +86,12 @@ workflows:
       - download_watchers:
           requires:
             - bootstrap
+      - build_push:
+          requires:
+            - lint
+            - test
+            - download_watchers
+          filters:
+            branches:
+              only:
+                - master
