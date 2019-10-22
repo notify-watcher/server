@@ -95,5 +95,3 @@ workflows:
             branches:
               only:
                 - master
-                - dockerfile # TODO: rempove
-
