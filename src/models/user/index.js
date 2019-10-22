@@ -6,13 +6,13 @@ const schema = require('./schema');
 const TOKEN_TTL = 15 * 60; // 15 minutes (specified in seconds)
 
 class User {
-  async createSecret() {
+  createSecret() {
     const secret = speakeasy.generateSecret({ length: 20 });
     this.secret = secret.base32;
     return this.save();
   }
 
-  async generateToken() {
+  generateToken() {
     return speakeasy.totp({
       secret: this.secret,
       encoding: 'base32',
@@ -20,7 +20,7 @@ class User {
     });
   }
 
-  async verifyToken(token) {
+  verifyToken(token) {
     return speakeasy.totp.verify({
       secret: this.secret,
       encoding: 'base32',
