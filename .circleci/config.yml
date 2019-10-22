@@ -89,7 +89,7 @@ workflows:
           requires:
             - lint
             - test
-            - download-watchers
+            - download_watchers
           filters:
             branches:
               only:
