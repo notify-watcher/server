@@ -144,7 +144,7 @@ async function runWatchersAuth(watchers) {
 
       if (error)
         console.warn(
-          `ERR: Found error for watcher ${watcherName} for user ${user.name} ${error}`,
+          `ERR: Watcher ${watcherName} for user ${user.name} threw error\n${error}`,
         );
 
       // TODO: Send notifications
@@ -184,7 +184,7 @@ async function runWatchersNoAuth(watchers) {
     }
 
     if (error)
-      console.warn(`ERR: Found error for watcher ${watcherName} ${error}`);
+      console.warn(`ERR: Watcher ${watcherName} threw error\n${error}`);
   });
 }
 
