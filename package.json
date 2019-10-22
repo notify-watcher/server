@@ -24,7 +24,9 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "dev:watchers": "DOWNLOAD_WATCHERS=true nodemon src/index.js",
-    "docker:build": "DOCKER_BUILDKIT=1 docker build -t notifywatcher/server -t notifywatcher/server:$(git describe 2> /dev/null || echo 'latest') --progress=auto --secret id=npmrc,src=$HOME/.npmrc .",
+    "docker:build": "DOCKER_BUILDKIT=1 docker build -t notifywatcher/server -t notifywatcher/server:$(npm run docker:tag) --progress=auto --secret id=npmrc,src=$HOME/.npmrc .",
+    "docker:tag": "echo $(git describe 2> /dev/null || echo 'latest')",
+    "docker:push": "npm run docker:build && docker push notifywatcher/server && docker push $(npm run docker:tag)",
     "docker:run": "npm run docker:build && docker-compose up",
     "download-watchers": "DOWNLOAD_WATCHERS=true node src/watchers/download-watchers.js",
     "lint": "eslint .",
