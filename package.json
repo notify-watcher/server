@@ -28,7 +28,9 @@
     "test:ci": "jest",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "download-watchers": "DOWNLOAD_WATCHERS=true node src/watchers/download-watchers.js"
+    "download-watchers": "DOWNLOAD_WATCHERS=true node src/watchers/download-watchers.js",
+    "release": "standard-version",
+    "postrelease": "git push --follow-tags"
   },
   "dependencies": {
     "@notify-watcher/core": "^0.3.0",
@@ -59,6 +61,7 @@
     "jest": "^24.9.0",
     "nodemon": "^1.19.3",
     "prettier": "^1.18.2",
-    "rosie": "^2.0.1"
+    "rosie": "^2.0.1",
+    "standard-version": "^7.0.0"
   }
 }
