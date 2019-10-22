@@ -1,5 +1,7 @@
-image=$(. scripts/docker_image.sh)
-tag=$(. scripts/docker_tag.sh)
+#!/bin/bash
+
+image=$(scripts/docker_image.sh)
+tag=$(scripts/docker_tag.sh)
 
 DOCKER_BUILDKIT=1 docker build \
   -t $image \

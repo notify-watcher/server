@@ -24,8 +24,8 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "dev:watchers": "DOWNLOAD_WATCHERS=true nodemon src/index.js",
-    "docker:build": ". scripts/docker_build.sh",
-    "docker:push": "npm run docker:build && . scripts/docker_push.sh",
+    "docker:build": "scripts/docker_build.sh",
+    "docker:push": "npm run docker:build && scripts/docker_push.sh",
     "docker:run": "npm run docker:build && docker-compose up",
     "download-watchers": "DOWNLOAD_WATCHERS=true node src/watchers/download-watchers.js",
     "lint": "eslint .",
