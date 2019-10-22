@@ -8,8 +8,12 @@ services:
     command: ['./wait-for-it.sh', 'mongo:27017', '--', 'npm', 'run', 'start']
     environment:
       - DATABASE_URL=mongodb://mongo/notify-watcher
+      - PORT=80
+      - GITHUB_NOTIFICATIONS_TOKEN="$GITHUB_NOTIFICATIONS_TOKEN"
+      - RUT="$RUT"
+      - NODE_ENV=development
     ports:
-      - '3000:3000'
+      - '3001:80'
     depends_on:
       - mongo
 
