@@ -1,10 +1,7 @@
 const mongoose = require('mongoose');
-
-const { Schema } = mongoose;
 const ClientSchema = require('../client/schema');
 
-// To fix https://github.com/Automattic/mongoose/issues/4291
-mongoose.Promise = global.Promise;
+const { Schema } = mongoose;
 
 const schema = new Schema({
   email: {
