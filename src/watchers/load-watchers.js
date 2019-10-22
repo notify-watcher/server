@@ -30,9 +30,15 @@ function loadWatchers(watchersPath) {
         path: watcherPath,
       };
     })
-    .filter(({ config, name }) => validateAuth(config.auth, name))
-    .filter(({ config, name }) => validateLibs(executor, config.libs, name))
-    .filter(({ config, name }) => validateTimeframe(config.timeframe, name));
+    .filter(({ config, name }) =>
+      validateAuth(config.auth, name, { verbose: true }),
+    )
+    .filter(({ config, name }) =>
+      validateLibs(executor, config.libs, name, { verbose: true }),
+    )
+    .filter(({ config, name }) =>
+      validateTimeframe(config.timeframe, name, { verbose: true }),
+    );
 
   const minuteWatchers = watchers.filter(
     watcher => watcher.config.timeframe.type === TIMEFRAMES.minute,
