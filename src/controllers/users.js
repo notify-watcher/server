@@ -1,14 +1,19 @@
 const emails = require('../emails');
 const User = require('../models/user');
 
+const STATUS_CODES = {
+  created: 201,
+  noContent: 204,
+};
+
 async function sendToken(ctx) {
   const { email } = ctx.request.body;
-  let newUser = false;
   let user = await User.findOne({ email });
+  ctx.status = STATUS_CODES.noContent;
   if (!user) {
     user = await User.create({ email });
     await user.createSecret();
-    newUser = true;
+    ctx.status = STATUS_CODES.created;
   }
   const token = await user.generateToken();
   await emails.emailSender.send({
@@ -20,10 +25,6 @@ async function sendToken(ctx) {
       token,
     },
   });
-  ctx.body = {
-    email,
-    newUser,
-  };
 }
 
 module.exports = {
