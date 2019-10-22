@@ -1,6 +1,6 @@
 const speakeasy = require('speakeasy');
+const _ = require('lodash');
 const mongoose = require('mongoose');
-const last = require('lodash/last');
 const schema = require('./schema');
 
 const TOKEN_TTL = 15 * 60; // 15 minutes (specified in seconds)
@@ -32,7 +32,7 @@ class User {
   async addClient(clientData) {
     this.clients.push(clientData);
     await this.save();
-    return last(this.clients);
+    return _.last(this.clients);
   }
 }
 
