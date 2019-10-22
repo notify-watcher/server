@@ -9,8 +9,8 @@ services:
     environment:
       - DATABASE_URL=mongodb://mongo/notify-watcher
       - PORT=80
-      - GITHUB_NOTIFICATIONS_TOKEN="$GITHUB_NOTIFICATIONS_TOKEN"
-      - RUT="$RUT"
+      - GITHUB_NOTIFICATIONS_TOKEN=$GITHUB_NOTIFICATIONS_TOKEN
+      - RUT=$RUT
       - NODE_ENV=development
     ports:
       - '3001:80'
