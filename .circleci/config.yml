@@ -95,4 +95,3 @@ workflows:
             branches:
               only:
                 - master
-                - gpr-docker
