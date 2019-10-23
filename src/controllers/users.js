@@ -1,4 +1,4 @@
-const emails = require('../emails');
+const { sendToken: sendTokenEmail } = require('../emails');
 const User = require('../models/user');
 
 const STATUS_CODES = {
@@ -16,15 +16,7 @@ async function sendToken(ctx) {
     ctx.status = STATUS_CODES.created;
   }
   const token = await user.generateToken();
-  await emails.emailSender.send({
-    template: emails.templates.sendToken,
-    message: {
-      to: email,
-    },
-    locals: {
-      token,
-    },
-  });
+  await sendTokenEmail(email, token);
 }
 
 module.exports = {
