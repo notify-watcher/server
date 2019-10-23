@@ -5,9 +5,8 @@ services:
   server:
     image: notifywatcher/server
     restart: on-failure
-    command: ['./wait-for-it.sh', 'mongo:27017', '--', 'npm', 'run', 'start']
     environment:
-      - DATABASE_URL=mongodb://mongo/notify-watcher
+      - DATABASE_HOST=mongo
       - PORT=80
       - GITHUB_NOTIFICATIONS_TOKEN=$GITHUB_NOTIFICATIONS_TOKEN
       - RUT=$RUT
