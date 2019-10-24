@@ -24,7 +24,7 @@ const WATCHERS_LIST = [
   {
     url: 'https://github.com/notify-watcher/watchers',
     branch: 'master',
-    watchers: ['gtd', 'github-notifications', 'vtr', 'unired-tag'],
+    watchers: ['gtd', 'github-notifications', 'vtr'],
   },
 ];
 
