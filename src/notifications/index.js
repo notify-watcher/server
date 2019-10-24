@@ -108,7 +108,7 @@ function sendClientKindsNotifications(clientKindsNotifications, watcherName) {
  * notifications to those users using the configured clients
  * @param {{user: Object, notifications: Object[]}[]} usersNotifications
  */
-function sendWatcherNotifications(watcherName, usersNotifications) {
+async function sendWatcherNotifications(watcherName, usersNotifications) {
   const clientsNotifications = groupUsersNotifications(
     usersNotifications,
     watcherName,
@@ -116,7 +116,7 @@ function sendWatcherNotifications(watcherName, usersNotifications) {
   const clientKindsNotifications = groupClientsNotifications(
     clientsNotifications,
   );
-  sendClientKindsNotifications(clientKindsNotifications, watcherName);
+  await sendClientKindsNotifications(clientKindsNotifications, watcherName);
 
   if (env.isDev && LOCAL_ENV.usersNotifications)
     console.log(
