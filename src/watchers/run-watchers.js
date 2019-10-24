@@ -49,9 +49,18 @@ const Users = [
   {
     name: 'user2',
     subscriptions: {
+      'unired-tag': {
+        auth: {
+          rut: process.env.RUT,
+        },
+        notificationTypes: {
+          updatedBallot: ['user2ClientId'],
+        },
+        snapshot: {},
+      },
       gtd: {
         notificationTypes: {
-          newPlan: ['user1ClientId'],
+          newPlan: ['user2ClientId'],
         },
       },
     },
