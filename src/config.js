@@ -3,12 +3,14 @@ const path = require('path');
 const TEMP_DIR_PATH = path.resolve(path.join('.', 'tmp'));
 
 const {
-  NODE_ENV = 'development',
   DATABASE_HOST,
   DATABASE_NAME = 'notify-watcher',
   DATABASE_PORT = '27017',
-  PORT = 3000,
   DOWNLOAD_WATCHERS = false,
+  NODE_ENV = 'development',
+  NOTIFY_WATCHER_SERVER_TOKEN = 'server-token',
+  NOTIFY_WATCHER_TELEGRAM_TOKEN = 'telegram-token',
+  PORT = 3000,
 } = process.env;
 
 const isDev = NODE_ENV === 'development';
@@ -28,12 +30,14 @@ const config = {
     isTest,
     isProd,
   },
-  PORT,
   DATABASE_URL: databaseUrl(),
   DOWNLOAD_WATCHERS,
+  NOTIFY_WATCHER_SERVER_TOKEN,
+  NOTIFY_WATCHER_TELEGRAM_TOKEN,
+  PORT,
   WATCHERS: [],
-  WATCHERS_TEMP_PATH: path.resolve(path.join(TEMP_DIR_PATH, 'watchers')),
   WATCHERS_PATH: path.resolve(path.join('.', 'watchers')),
+  WATCHERS_TEMP_PATH: path.resolve(path.join(TEMP_DIR_PATH, 'watchers')),
 };
 
 module.exports = config;
