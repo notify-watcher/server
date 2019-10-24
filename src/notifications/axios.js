@@ -3,7 +3,10 @@ const { api } = require('../config');
 
 const { headerName, headerValue } = api.authToken;
 
-const instance = axios.create();
-instance.defaults.headers.common[headerName] = headerValue;
+const instance = axios.create({
+  headers: {
+    [headerName]: headerValue,
+  },
+});
 
-module.exports = axios;
+module.exports = instance;
