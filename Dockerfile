@@ -21,7 +21,7 @@ RUN wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for
 RUN chmod +x wait-for-it.sh
 
 COPY docker_entrypoint.sh .
-RUN chmod +x wait-for-it.sh
+RUN chmod +x docker_entrypoint.sh
 
 COPY package.json .
 COPY package-lock.json .
