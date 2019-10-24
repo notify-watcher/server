@@ -22,13 +22,14 @@ const MOCK_REDIS = {};
 const Users = [
   {
     name: 'user1',
+    email: 'user1@example.com',
     subscriptions: {
       'github-notifications': {
         auth: {
           token: process.env.GITHUB_NOTIFICATIONS_TOKEN,
         },
         notificationTypes: {
-          subscribed: ['user1ClientId1'],
+          subscribed: ['user1TelegramChatId1'],
         },
         snapshot: {},
       },
@@ -37,24 +38,25 @@ const Users = [
           rut: process.env.RUT,
         },
         notificationTypes: {
-          updatedBallot: ['user1ClientId1'],
+          updatedBallot: ['user1TelegramChatId1'],
         },
         snapshot: {},
       },
       gtd: {
         notificationTypes: {
-          newPlan: ['user1ClientId1'],
+          newPlan: ['user1TelegramChatId1'],
         },
       },
       vtr: {
         notificationTypes: {
-          newPlan: ['user1ClientId2'],
+          newPlan: ['email'],
         },
       },
     },
   },
   {
     name: 'user2',
+    email: 'user2@example.com',
     subscriptions: {
       'unired-tag': {
         auth: {
@@ -67,12 +69,12 @@ const Users = [
       },
       gtd: {
         notificationTypes: {
-          newPlan: ['user2ClientId2'],
+          newPlan: ['user2TelegramChatId1', 'email'],
         },
       },
       vtr: {
         notificationTypes: {
-          newPlan: ['user2ClientId1'],
+          newPlan: ['user2TelegramChatId2'],
         },
       },
     },
