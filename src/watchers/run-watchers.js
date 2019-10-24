@@ -43,6 +43,11 @@ const Users = [
       },
       gtd: {
         notificationTypes: {
+          newPlan: ['user1ClientId1'],
+        },
+      },
+      vtr: {
+        notificationTypes: {
           newPlan: ['user1ClientId2'],
         },
       },
@@ -63,6 +68,11 @@ const Users = [
       gtd: {
         notificationTypes: {
           newPlan: ['user2ClientId2'],
+        },
+      },
+      vtr: {
+        notificationTypes: {
+          newPlan: ['user2ClientId1'],
         },
       },
     },
@@ -232,6 +242,8 @@ async function runWatchersNoAuth(watchers) {
     if (notifications.length === 0) return;
 
     const users = await usersForWatcher(watcherName);
+    if (users.length === 0) return;
+
     const usersNotifications = users.map(user => ({
       user,
       notifications,
