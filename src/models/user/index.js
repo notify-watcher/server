@@ -34,6 +34,11 @@ class User {
     await this.save();
     return _.last(this.clients);
   }
+
+  updateSubscriptions(subscriptionsData) {
+    this.subscriptions = subscriptionsData;
+    return this.save();
+  }
 }
 
 schema.loadClass(User);
