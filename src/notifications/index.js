@@ -4,8 +4,8 @@ const {
   constants: { CLIENT_KINDS, DEFAULT_CLIENT_IDS },
 } = require('@notify-watcher/core');
 const { env } = require('../config');
-const emailNotificationsHandler = require('./email');
-const telegramNotificationsHandler = require('./telegram');
+const { sendWatcherNotifications: emailHandler } = require('./email');
+const { sendWatcherNotifications: telegramHandler } = require('./telegram');
 
 // TODO: delete this when connecting to the db
 // https://github.com/notify-watcher/server/issues/22
@@ -29,9 +29,8 @@ const LOCAL_ENV = {
   clientsNotifications: false,
 };
 
-const CLIENT_HANDLERS = {
-  [CLIENT_KINDS.telegram]: telegramNotificationsHandler,
-  [CLIENT_KINDS.email]: emailNotificationsHandler,
+  [CLIENT_KINDS.telegram]: telegramHandler,
+  [CLIENT_KINDS.email]: emailHandler,
 };
 
 const DEFAULT_CLIENT_FOR_USER = {

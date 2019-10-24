@@ -14,4 +14,4 @@ function sendWatcherNotifications(watcherName, clientsNotifications) {
     );
 }
 
-module.exports = sendWatcherNotifications;
+module.exports = { sendWatcherNotifications };
