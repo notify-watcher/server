@@ -12,7 +12,7 @@ describe('users route tests', () => {
       sendTokenEmailSpy.mockReset();
     });
 
-    afterAll(async () => User.deleteOne({ email: userEmail }));
+    afterAll(() => User.deleteOne({ email: userEmail }));
 
     test('to a new user', async () => {
       await request
