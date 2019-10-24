@@ -114,11 +114,9 @@ function sendWatcherNotifications(watcherName, usersNotifications) {
     usersNotifications,
     watcherName,
   );
-
   const clientKindsNotifications = groupClientsNotifications(
     clientsNotifications,
   );
-
   sendClientKindsNotifications(clientKindsNotifications, watcherName);
 
   if (env.isDev && LOCAL_ENV.usersNotifications)
