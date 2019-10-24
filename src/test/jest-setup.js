@@ -1,5 +1,7 @@
 const mongoose = require('../mongoose');
-const config = require('../../src/config');
+const config = require('../config');
+
+jest.mock('../../src/emails');
 
 let testDatabase;
 
