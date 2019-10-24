@@ -11,7 +11,7 @@ const LOCAL_ENV = {
   watcherIteration: false,
   watcherAuthRun: false,
   watcherNoAuthRun: false,
-  alwaysRunDayWatcher: true,
+  alwaysRunDayWatcher: false,
 };
 
 // Keep track of which watchers are running,

@@ -12,7 +12,7 @@ const LOCAL_ENV = {
   clientsNotifications: false,
 };
 
-async function sendWatcherNotifications(watcherName, clientsNotifications) {
+function sendWatcherNotifications(watcherName, clientsNotifications) {
   if (env.isDev && LOCAL_ENV.clientsNotifications)
     console.log(
       `telegram notifications for ${watcherName} watcher\n`,
@@ -22,7 +22,7 @@ async function sendWatcherNotifications(watcherName, clientsNotifications) {
   const chatIdsNotifications = clientsNotifications.map(
     ({ client: { chatId }, notifications }) => ({ chatId, notifications }),
   );
-  await axios.post(`${url}/notifications`, chatIdsNotifications);
+  return axios.post(`${url}/notifications`, chatIdsNotifications);
 }
 
 module.exports = { sendWatcherNotifications };
