@@ -53,7 +53,7 @@ function groupUserNotifications({ user, notifications, watcherName }) {
   const { notificationTypes } = user.subscriptions[watcherName];
 
   notifications.forEach(notification => {
-    const clientIds = notificationTypes[notification.key];
+    const clientIds = notificationTypes[notification.type];
     if (!clientIds || clientIds.length === 0) return;
 
     clientIds.forEach(clientId => {
