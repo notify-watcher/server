@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 const util = require('util');
 const {
-  constants: { CLIENT_KINDS, DEFAULT_CLIENT_IDS },
+  constants: { CLIENT_KINDS },
 } = require('@notify-watcher/core');
 const { env } = require('../config');
 const { sendWatcherNotifications: emailHandler } = require('./email');
@@ -22,6 +22,14 @@ const MOCK_CLIENTS = {
     kind: CLIENT_KINDS.telegram,
     chatId: 'user2TelegramChatId2',
   },
+  user1Email1: {
+    kind: CLIENT_KINDS.email,
+    email: 'user1Email1@example.com',
+  },
+  user2Email1: {
+    kind: CLIENT_KINDS.email,
+    email: 'user2Email1@example.com',
+  },
 };
 
 const LOCAL_ENV = {
@@ -35,17 +43,8 @@ const CLIENT_KIND_HANDLERS = {
   [CLIENT_KINDS.email]: emailHandler,
 };
 
-const DEFAULT_CLIENT_FOR_USER_HANDLERS = {
-  [DEFAULT_CLIENT_IDS.email]: user => ({
-    kind: CLIENT_KINDS.email,
-    email: user.email,
-  }),
-};
-
 function userClientForClientId(user, clientId) {
-  return DEFAULT_CLIENT_IDS[clientId]
-    ? DEFAULT_CLIENT_FOR_USER_HANDLERS[clientId](user)
-    : MOCK_CLIENTS[clientId];
+  return MOCK_CLIENTS[clientId];
 }
 
 function groupUserNotifications({ user, notifications, watcherName }) {
@@ -121,7 +120,7 @@ function sendWatcherNotifications(watcherName, usersNotifications) {
 
   if (env.isDev && LOCAL_ENV.usersNotifications)
     console.log(
-      'usersNotifications\n',
+      `usersNotifications ${watcherName}\n`,
       util.inspect(usersNotifications, { showHidden: false, depth: 2 }),
     );
   if (env.isDev && LOCAL_ENV.clientsNotifications)
@@ -138,6 +137,5 @@ function sendWatcherNotifications(watcherName, usersNotifications) {
 
 module.exports = {
   CLIENT_KIND_HANDLERS,
-  DEFAULT_CLIENT_FOR_USER_HANDLERS,
   sendWatcherNotifications,
 };
