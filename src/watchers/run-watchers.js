@@ -4,6 +4,7 @@ const {
   constants: { TIMEFRAMES },
 } = require('@notify-watcher/core');
 const { env } = require('../config.js');
+const { sendNotifications } = require('../notifications');
 const executor = require('./executor');
 
 const LOG = {
@@ -184,7 +185,6 @@ async function runWatchersAuth(watchers) {
     });
 
     await Promise.all(runWatchersPromises);
-    await sendNotifications(usersNotifications);
 
     if (env.isDev && LOG.WATCHER_AUTH_RUN && usersNotifications.length > 0) {
       console.log(`\n# Watcher ${watcherName} usersNotifications`);
@@ -192,6 +192,8 @@ async function runWatchersAuth(watchers) {
         util.inspect(usersNotifications, { showHidden: false, depth: 3 }),
       );
     }
+
+    await sendNotifications(usersNotifications);
   });
 }
 
@@ -234,6 +236,8 @@ async function runWatchersNoAuth(watchers) {
         util.inspect(usersNotifications, { showHidden: false, depth: 3 }),
       );
     }
+
+    await sendNotifications(usersNotifications);
   });
 }
 
