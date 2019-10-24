@@ -91,16 +91,26 @@ function groupClientsNotifications(clientsNotifications) {
 }
 
 function sendClientKindsNotifications(clientKindsNotifications, watcherName) {
-  Object.keys(clientKindsNotifications).forEach(clientKind => {
-    const clientHandler = CLIENT_KIND_HANDLERS[clientKind];
-    if (!clientHandler) {
-      console.warn(`WARN: No clientHandler for clientKind ${clientKind}`);
-      return;
-    }
+  const requests = Object.keys(clientKindsNotifications).map(
+    async clientKind => {
+      const clientHandler = CLIENT_KIND_HANDLERS[clientKind];
+      if (!clientHandler) {
+        console.warn(`WARN: No clientHandler for clientKind ${clientKind}`);
+        return;
+      }
 
-    const clientKindNotifications = clientKindsNotifications[clientKind];
-    clientHandler(watcherName, clientKindNotifications);
-  });
+      const clientKindNotifications = clientKindsNotifications[clientKind];
+      try {
+        await clientHandler(watcherName, clientKindNotifications);
+      } catch (error) {
+        // TODO: Rollbar
+        console.error(
+          `ERR: Sending notifications to client ${clientKind} from watcher ${watcherName}`,
+        );
+      }
+    },
+  );
+  return Promise.all(requests);
 }
 
 /**
