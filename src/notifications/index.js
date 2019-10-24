@@ -12,11 +12,11 @@ const { sendWatcherNotifications: telegramHandler } = require('./telegram');
 const MOCK_CLIENTS = {
   user1TelegramChatId1: {
     kind: CLIENT_KINDS.telegram,
-    chatId: 'user1TelegramChatId1',
+    chatId: '784232',
   },
   user2TelegramChatId1: {
     kind: CLIENT_KINDS.telegram,
-    chatId: 'user2TelegramChatId1',
+    chatId: '784232',
   },
   user2TelegramChatId2: {
     kind: CLIENT_KINDS.telegram,
