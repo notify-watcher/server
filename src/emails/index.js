@@ -20,9 +20,18 @@ function buildPath(emailFolder) {
   return path.join(__dirname, emailFolder);
 }
 
+function sendToken(email, token) {
+  return emailSender.send({
+    template: buildPath('send-token'),
+    message: {
+      to: email,
+    },
+    locals: {
+      token,
+    },
+  });
+}
+
 module.exports = {
-  emailSender,
-  templates: {
-    sendToken: buildPath('send-token'),
-  },
+  sendToken,
 };
