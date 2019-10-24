@@ -181,7 +181,7 @@ async function runWatchersAuth(watchers) {
       }
       if (notifications.length === 0) return;
 
-      usersNotifications.push({ user, notifications });
+      usersNotifications.push({ user, notifications, watcherName });
     });
 
     await Promise.all(runWatchersPromises);
@@ -229,7 +229,11 @@ async function runWatchersNoAuth(watchers) {
     if (notifications.length === 0) return;
 
     const users = await usersForWatcher(watcherName);
-    const usersNotifications = users.map(user => ({ user, notifications }));
+    const usersNotifications = users.map(user => ({
+      user,
+      notifications,
+      watcherName,
+    }));
 
     if (env.isDev && LOG.WATCHER_NO_AUTH_RUN) {
       console.log(`\n# Watcher ${watcherName} usersNotifications`);
