@@ -1,4 +1,7 @@
 const path = require('path');
+const {
+  constants: { CLIENT_KINDS },
+} = require('@notify-watcher/core');
 
 const TEMP_DIR_PATH = path.resolve(path.join('.', 'tmp'));
 
@@ -8,8 +11,8 @@ const {
   DATABASE_PORT = '27017',
   DOWNLOAD_WATCHERS = false,
   NODE_ENV = 'development',
-  NOTIFY_WATCHER_SERVER_TOKEN = 'server-token',
-  NOTIFY_WATCHER_TELEGRAM_TOKEN = 'telegram-token',
+  NOTIFY_WATCHER_TOKEN = 'secret',
+  NOTIFY_WATCHER_TELEGRAM_URL = 'http://localhost:3003',
   PORT = 3000,
 } = process.env;
 
@@ -27,13 +30,14 @@ function databaseUrl() {
 const config = {
   api: {
     port: PORT,
-    serverToken: {
-      headerName: 'x-notify-watcher-server-token',
-      headerValue: NOTIFY_WATCHER_SERVER_TOKEN,
+    authToken: {
+      headerName: 'x-notify-watcher-token',
+      headerValue: NOTIFY_WATCHER_TOKEN,
     },
-    telegramToken: {
-      headerName: 'x-notify-watcher-telegram-token',
-      headerValue: NOTIFY_WATCHER_TELEGRAM_TOKEN,
+  },
+  clients: {
+    [CLIENT_KINDS.telegram]: {
+      url: NOTIFY_WATCHER_TELEGRAM_URL,
     },
   },
   env: {
@@ -43,8 +47,6 @@ const config = {
   },
   DATABASE_URL: databaseUrl(),
   DOWNLOAD_WATCHERS,
-  NOTIFY_WATCHER_SERVER_TOKEN,
-  NOTIFY_WATCHER_TELEGRAM_TOKEN,
   WATCHERS_PATH: path.resolve(path.join('.', 'watchers')),
   WATCHERS_TEMP_PATH: path.resolve(path.join(TEMP_DIR_PATH, 'watchers')),
   WATCHERS: [],
