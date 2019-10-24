@@ -27,6 +27,14 @@ function databaseUrl() {
 const config = {
   api: {
     port: PORT,
+    serverToken: {
+      headerName: 'x-notify-watcher-server-token',
+      headerValue: NOTIFY_WATCHER_SERVER_TOKEN,
+    },
+    telegramToken: {
+      headerName: 'x-notify-watcher-telegram-token',
+      headerValue: NOTIFY_WATCHER_TELEGRAM_TOKEN,
+    },
   },
   env: {
     isDev,
