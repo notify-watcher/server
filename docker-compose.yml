@@ -3,7 +3,7 @@
 version: '3'
 services:
   server:
-    image: notifywatcher/server
+    image: docker.pkg.github.com/notify-watcher/server/server
     restart: on-failure
     command: ['./wait-for-it.sh', 'mongo:27017', '--', 'npm', 'run', 'start']
     environment:
@@ -18,8 +18,9 @@ services:
       - mongo
 
   mongo:
-    image: mongo
+    image: mongo:4
     ports:
       - '27017:27017'
     volumes:
       - './tmp/mongodb/db:/data/db'
+      - './tmp/mongodb/config:/data/configdb'

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-echo "notifywatcher/server"
+echo "docker.pkg.github.com/notify-watcher/server/server"
