@@ -7,9 +7,6 @@ ENV NODE_ENV=production
 
 WORKDIR /server
 
-RUN wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
-RUN chmod +x wait-for-it.sh
-
 # https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-in-docker
 # Install latest chrome dev package and fonts to support major charsets (Chinese, Japanese, Arabic, Hebrew, Thai and a few others)
 # Note: this installs the necessary libs to make the bundled version of Chromium that Puppeteer installs, work.
@@ -20,6 +17,12 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
   --no-install-recommends \
   && rm -rf /var/lib/apt/lists/*
 
+RUN wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
+RUN chmod +x wait-for-it.sh
+
+COPY docker_entrypoint.sh .
+RUN chmod +x docker_entrypoint.sh
+
 COPY package.json .
 COPY package-lock.json .
 
@@ -28,6 +31,4 @@ RUN --mount=type=secret,id=npmrc,dst=/server/.npmrc npm install
 COPY lib lib
 COPY src src
 
-RUN npm run download-watchers
-
-CMD ["npm", "run", "start"]
+ENTRYPOINT ["./docker_entrypoint.sh"]
