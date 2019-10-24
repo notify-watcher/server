@@ -29,29 +29,22 @@ const LOCAL_ENV = {
   clientsNotifications: false,
 };
 
+const CLIENT_KIND_HANDLERS = {
   [CLIENT_KINDS.telegram]: telegramHandler,
   [CLIENT_KINDS.email]: emailHandler,
 };
 
-const DEFAULT_CLIENT_FOR_USER = {
+const DEFAULT_CLIENT_FOR_USER_HANDLERS = {
   [DEFAULT_CLIENT_IDS.email]: user => ({
     kind: CLIENT_KINDS.email,
     email: user.email,
   }),
 };
 
-function defaultClientForUser(user, clientId) {
-  return DEFAULT_CLIENT_FOR_USER[clientId](user);
-}
-
-function clientForUser(user, clientId) {
-  return MOCK_CLIENTS[clientId];
-}
-
 function userClientForClientId(user, clientId) {
   return DEFAULT_CLIENT_IDS[clientId]
-    ? defaultClientForUser(user, clientId)
-    : clientForUser(user, clientId);
+    ? DEFAULT_CLIENT_FOR_USER_HANDLERS[clientId](user)
+    : MOCK_CLIENTS[clientId];
 }
 
 /**
@@ -104,7 +97,7 @@ function sendWatcherNotifications(watcherName, usersNotifications) {
     );
 
   Object.keys(clientKindsNotifications).forEach(clientKind => {
-    const clientHandler = CLIENT_HANDLERS[clientKind];
+    const clientHandler = CLIENT_KIND_HANDLERS[clientKind];
     if (!clientHandler) {
       console.warn(`WARN: No clientHandler for clientKind ${clientKind}`);
       return;
@@ -115,4 +108,8 @@ function sendWatcherNotifications(watcherName, usersNotifications) {
   });
 }
 
-module.exports = { sendWatcherNotifications };
+module.exports = {
+  CLIENT_KIND_HANDLERS,
+  DEFAULT_CLIENT_FOR_USER_HANDLERS,
+  sendWatcherNotifications,
+};
