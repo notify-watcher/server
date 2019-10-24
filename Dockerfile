@@ -28,7 +28,6 @@ COPY package-lock.json .
 
 RUN --mount=type=secret,id=npmrc,dst=/server/.npmrc npm install
 
-COPY lib lib
 COPY src src
 
 ENTRYPOINT ["./docker_entrypoint.sh"]
