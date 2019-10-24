@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const ClientSchema = require('../client/schema');
+const SubscriptionSchema = require('../subscription/schema');
 
 const { Schema } = mongoose;
 
@@ -11,7 +12,7 @@ const schema = new Schema({
   },
   secret: Schema.Types.String,
   clients: [ClientSchema],
-  subscriptions: [Schema.Types.Mixed],
+  subscriptions: [SubscriptionSchema],
 });
 
 module.exports = schema;
