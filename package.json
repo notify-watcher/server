@@ -52,8 +52,7 @@
     "mongoose": "^5.7.4",
     "nodegit": "^0.26.2",
     "path": "^0.12.7",
-    "speakeasy": "^2.0.0",
-    "supertest": "^4.0.2"
+    "speakeasy": "^2.0.0"
   },
   "devDependencies": {
     "eslint": "^6.5.1",
@@ -66,6 +65,7 @@
     "nodemon": "^1.19.3",
     "prettier": "^1.18.2",
     "rosie": "^2.0.1",
-    "standard-version": "^7.0.0"
+    "standard-version": "^7.0.0",
+    "supertest": "^4.0.2"
   }
 }

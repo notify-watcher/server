@@ -5,7 +5,23 @@
         "plugin:jest/recommended"
     ],
     "rules": {
-        "no-underscore-dangle": ["error", { "allow": ["_id"] }]
+        "no-underscore-dangle": [
+            "error",
+            {
+                "allow": [
+                    "_id"
+                ]
+            }
+        ],
+        "import/no-extraneous-dependencies": [
+            "error",
+            {
+                "devDependencies": [
+                    "**/*.test.js",
+                    "src/tests/**/*.js"
+                ]
+            }
+        ]
     },
     "env": {
         "node": true,
