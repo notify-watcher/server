@@ -105,7 +105,7 @@ function sendClientKindsNotifications(clientKindsNotifications, watcherName) {
       } catch (error) {
         // TODO: Rollbar
         console.error(
-          `ERR: Sending notifications to client ${clientKind} from watcher ${watcherName}`,
+          `ERR: Sending notifications to client ${clientKind} from watcher ${watcherName}\n${error}`,
         );
       }
     },
