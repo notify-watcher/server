@@ -4,7 +4,15 @@ const {
   constants: { TIMEFRAMES },
 } = require('@notify-watcher/core');
 const { env } = require('../config.js');
+const { sendWatcherNotifications } = require('../notifications');
 const executor = require('./executor');
+
+const LOCAL_ENV = {
+  watcherIteration: false,
+  watcherAuthRun: false,
+  watcherNoAuthRun: false,
+  alwaysRunDayWatcher: false,
+};
 
 // Keep track of which watchers are running,
 // use name as a key for no auth watchers
@@ -13,14 +21,15 @@ const MOCK_REDIS = {};
 
 const Users = [
   {
-    name: 'mock user',
+    name: 'user1',
+    email: 'user1@example.com',
     subscriptions: {
       'github-notifications': {
         auth: {
           token: process.env.GITHUB_NOTIFICATIONS_TOKEN,
         },
         notificationTypes: {
-          subscribed: ['clientId'],
+          subscribed: ['user1TelegramChatId1'],
         },
         snapshot: {},
       },
@@ -29,15 +38,46 @@ const Users = [
           rut: process.env.RUT,
         },
         notificationTypes: {
-          updatedBallot: ['clientId'],
+          updatedBallot: ['user1TelegramChatId1'],
         },
         snapshot: {},
+      },
+      gtd: {
+        notificationTypes: {
+          newPlan: ['user1TelegramChatId1'],
+        },
+      },
+      vtr: {
+        notificationTypes: {
+          newPlan: ['user1Email1'],
+        },
       },
     },
   },
   {
-    name: 'other user',
-    subscriptions: {},
+    name: 'user2',
+    email: 'user2@example.com',
+    subscriptions: {
+      'unired-tag': {
+        auth: {
+          rut: process.env.RUT,
+        },
+        notificationTypes: {
+          updatedBallot: ['user2ClientId1'],
+        },
+        snapshot: {},
+      },
+      gtd: {
+        notificationTypes: {
+          newPlan: ['user2TelegramChatId1', 'user2Email1'],
+        },
+      },
+      vtr: {
+        notificationTypes: {
+          newPlan: ['user2TelegramChatId2'],
+        },
+      },
+    },
   },
 ];
 
@@ -95,6 +135,8 @@ async function updateWatcherSnapshot(watcherName, snapshot) {
 }
 
 function shouldRunWatcher({ config: { timeframe } }, runDate) {
+  if (env.isDev && LOCAL_ENV.alwaysRunDayWatcher) return true;
+
   // TODO: For now we will just run daily watchers at the hour in
   // the timeframe config for all users. Later we should add
   // logic to notifications so they're sent to each user at
@@ -108,20 +150,23 @@ function shouldRunWatcher({ config: { timeframe } }, runDate) {
 }
 
 function logWatcherIteration(data) {
-  if (env.isDev) {
-    console.log(`\n### Watcher iteration ${data.watcherName}\n`);
-    console.log(util.inspect(data, { showHidden: false, depth: 2 }));
+  if (env.isDev && LOCAL_ENV.watcherIteration) {
+    const { user, ...logData } = data;
+    const userString = user ? ` for user: ${user}` : '';
+    console.log(`\n### Watcher ${data.watcherName} iteration${userString}\n`);
+    console.log(util.inspect(logData, { showHidden: false, depth: 2 }));
   }
 }
 
 async function runWatchersAuth(watchers) {
   const runDate = new Date();
-  watchers.forEach(async watcher => {
+  watchers.map(async watcher => {
     if (!shouldRunWatcher(watcher, runDate)) return;
 
+    const usersNotifications = [];
     const { name: watcherName, watch } = watcher;
     const users = await usersForWatcher(watcherName);
-    users.forEach(async user => {
+    const runWatchersPromises = users.map(async user => {
       const id = `${watcherName}:${user.name}`;
       if (await isRunning(id)) return;
 
@@ -140,15 +185,31 @@ async function runWatchersAuth(watchers) {
         newSnapshot: snapshot,
         notifications,
         error,
+        user: user.name,
       });
 
-      if (error)
+      if (error) {
         console.warn(
           `ERR: Watcher ${watcherName} for user ${user.name} threw error\n${error}`,
         );
+        return;
+      }
+      if (notifications.length === 0) return;
 
-      // TODO: Send notifications
+      usersNotifications.push({ user, notifications });
     });
+
+    await Promise.all(runWatchersPromises);
+    if (usersNotifications.length === 0) return;
+
+    if (env.isDev && LOCAL_ENV.watcherAuthRun) {
+      console.log(`\n# Watcher ${watcherName} usersNotifications`);
+      console.log(
+        util.inspect(usersNotifications, { showHidden: false, depth: 3 }),
+      );
+    }
+
+    await sendWatcherNotifications(watcherName, usersNotifications);
   });
 }
 
@@ -176,15 +237,28 @@ async function runWatchersNoAuth(watchers) {
       error,
     });
 
-    if (notifications.length > 0) {
-      const users = await usersForWatcher(watcherName);
-      users.forEach(() => {
-        // TODO: Send notification to user
-      });
+    if (error) {
+      console.warn(`ERR: Watcher ${watcherName} threw error\n${error}`);
+      return;
+    }
+    if (notifications.length === 0) return;
+
+    const users = await usersForWatcher(watcherName);
+    if (users.length === 0) return;
+
+    const usersNotifications = users.map(user => ({
+      user,
+      notifications,
+    }));
+
+    if (env.isDev && LOCAL_ENV.watcherNoAuthRun) {
+      console.log(`\n# Watcher ${watcherName} usersNotifications`);
+      console.log(
+        util.inspect(usersNotifications, { showHidden: false, depth: 3 }),
+      );
     }
 
-    if (error)
-      console.warn(`ERR: Watcher ${watcherName} threw error\n${error}`);
+    await sendWatcherNotifications(watcherName, usersNotifications);
   });
 }
 
