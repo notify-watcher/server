@@ -185,8 +185,9 @@ async function runWatchersAuth(watchers) {
     });
 
     await Promise.all(runWatchersPromises);
+    if (usersNotifications.length === 0) return;
 
-    if (env.isDev && LOG.WATCHER_AUTH_RUN && usersNotifications.length > 0) {
+    if (env.isDev && LOG.WATCHER_AUTH_RUN) {
       console.log(`\n# Watcher ${watcherName} usersNotifications`);
       console.log(
         util.inspect(usersNotifications, { showHidden: false, depth: 3 }),
