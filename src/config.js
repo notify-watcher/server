@@ -25,6 +25,9 @@ function databaseUrl() {
 }
 
 const config = {
+  api: {
+    port: PORT,
+  },
   env: {
     isDev,
     isTest,
@@ -34,10 +37,9 @@ const config = {
   DOWNLOAD_WATCHERS,
   NOTIFY_WATCHER_SERVER_TOKEN,
   NOTIFY_WATCHER_TELEGRAM_TOKEN,
-  PORT,
-  WATCHERS: [],
   WATCHERS_PATH: path.resolve(path.join('.', 'watchers')),
   WATCHERS_TEMP_PATH: path.resolve(path.join(TEMP_DIR_PATH, 'watchers')),
+  WATCHERS: [],
 };
 
 module.exports = config;

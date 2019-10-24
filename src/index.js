@@ -7,7 +7,7 @@ async function startup() {
   await mongoose.dbConnect(config.DATABASE_URL);
   const { watchers } = await setUpWatchers();
   config.WATCHERS = watchers;
-  app.listen(config.PORT);
+  app.listen(config.api.port);
 }
 
 startup();
