@@ -2,17 +2,20 @@ const request = require('../test/supertest');
 const User = require('../models/user');
 const emails = require('../emails');
 
-describe('users route tests', () => {
+describe('users routes', () => {
   describe('POST users/send-token', () => {
     const sendTokenUrl = '/users/send-token';
     const userEmail = 'test1@example.org';
     const sendTokenEmailSpy = jest.spyOn(emails, 'sendToken');
 
-    afterEach(async () => {
+    beforeEach(async () => {
       sendTokenEmailSpy.mockReset();
     });
 
-    afterAll(() => User.deleteOne({ email: userEmail }));
+    afterAll(async () => {
+      await User.deleteOne({ email: userEmail });
+      sendTokenEmailSpy.mockRestore();
+    });
 
     test('to a new user', async () => {
       await request
