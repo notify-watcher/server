@@ -49,7 +49,7 @@ const Users = [
       },
       vtr: {
         notificationTypes: {
-          newPlan: ['email'],
+          newPlan: ['user1Email1'],
         },
       },
     },
@@ -69,7 +69,7 @@ const Users = [
       },
       gtd: {
         notificationTypes: {
-          newPlan: ['user2TelegramChatId1', 'email'],
+          newPlan: ['user2TelegramChatId1', 'user2Email1'],
         },
       },
       vtr: {
