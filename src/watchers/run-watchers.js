@@ -7,10 +7,11 @@ const { env } = require('../config.js');
 const { sendNotifications } = require('../notifications');
 const executor = require('./executor');
 
-const LOG = {
-  WATCHER_ITERATION: false,
-  WATCHER_AUTH_RUN: false,
-  WATCHER_NO_AUTH_RUN: false,
+const LOCAL_ENV = {
+  watcherIteration: false,
+  watcherAuthRun: false,
+  watcherNoAuthRun: false,
+  alwaysRunDayWatcher: true,
 };
 
 // Keep track of which watchers are running,
@@ -27,7 +28,7 @@ const Users = [
           token: process.env.GITHUB_NOTIFICATIONS_TOKEN,
         },
         notificationTypes: {
-          subscribed: ['user1ClientId'],
+          subscribed: ['user1ClientId1'],
         },
         snapshot: {},
       },
@@ -36,13 +37,13 @@ const Users = [
           rut: process.env.RUT,
         },
         notificationTypes: {
-          updatedBallot: ['user1ClientId'],
+          updatedBallot: ['user1ClientId1'],
         },
         snapshot: {},
       },
       gtd: {
         notificationTypes: {
-          newPlan: ['user1ClientId'],
+          newPlan: ['user1ClientId2'],
         },
       },
     },
@@ -55,13 +56,13 @@ const Users = [
           rut: process.env.RUT,
         },
         notificationTypes: {
-          updatedBallot: ['user2ClientId'],
+          updatedBallot: ['user2ClientId1'],
         },
         snapshot: {},
       },
       gtd: {
         notificationTypes: {
-          newPlan: ['user2ClientId'],
+          newPlan: ['user2ClientId2'],
         },
       },
     },
@@ -122,6 +123,8 @@ async function updateWatcherSnapshot(watcherName, snapshot) {
 }
 
 function shouldRunWatcher({ config: { timeframe } }, runDate) {
+  if (env.isDev && LOCAL_ENV.alwaysRunDayWatcher) return true;
+
   // TODO: For now we will just run daily watchers at the hour in
   // the timeframe config for all users. Later we should add
   // logic to notifications so they're sent to each user at
@@ -135,7 +138,7 @@ function shouldRunWatcher({ config: { timeframe } }, runDate) {
 }
 
 function logWatcherIteration(data) {
-  if (env.isDev && LOG.WATCHER_ITERATION) {
+  if (env.isDev && LOCAL_ENV.watcherIteration) {
     const { user, ...logData } = data;
     const userString = user ? ` for user: ${user}` : '';
     console.log(`\n### Watcher ${data.watcherName} iteration${userString}\n`);
@@ -187,7 +190,7 @@ async function runWatchersAuth(watchers) {
     await Promise.all(runWatchersPromises);
     if (usersNotifications.length === 0) return;
 
-    if (env.isDev && LOG.WATCHER_AUTH_RUN) {
+    if (env.isDev && LOCAL_ENV.watcherAuthRun) {
       console.log(`\n# Watcher ${watcherName} usersNotifications`);
       console.log(
         util.inspect(usersNotifications, { showHidden: false, depth: 3 }),
@@ -235,7 +238,7 @@ async function runWatchersNoAuth(watchers) {
       watcherName,
     }));
 
-    if (env.isDev && LOG.WATCHER_NO_AUTH_RUN) {
+    if (env.isDev && LOCAL_ENV.watcherNoAuthRun) {
       console.log(`\n# Watcher ${watcherName} usersNotifications`);
       console.log(
         util.inspect(usersNotifications, { showHidden: false, depth: 3 }),
