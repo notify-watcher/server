@@ -4,7 +4,7 @@ const {
   constants: { TIMEFRAMES },
 } = require('@notify-watcher/core');
 const { env } = require('../config.js');
-const { sendNotifications } = require('../notifications');
+const { sendWatcherNotifications } = require('../notifications');
 const executor = require('./executor');
 
 const LOCAL_ENV = {
@@ -196,7 +196,7 @@ async function runWatchersAuth(watchers) {
       }
       if (notifications.length === 0) return;
 
-      usersNotifications.push({ user, notifications, watcherName });
+      usersNotifications.push({ user, notifications });
     });
 
     await Promise.all(runWatchersPromises);
@@ -209,7 +209,7 @@ async function runWatchersAuth(watchers) {
       );
     }
 
-    await sendNotifications(usersNotifications);
+    await sendWatcherNotifications(watcherName, usersNotifications);
   });
 }
 
@@ -249,7 +249,6 @@ async function runWatchersNoAuth(watchers) {
     const usersNotifications = users.map(user => ({
       user,
       notifications,
-      watcherName,
     }));
 
     if (env.isDev && LOCAL_ENV.watcherNoAuthRun) {
@@ -259,7 +258,7 @@ async function runWatchersNoAuth(watchers) {
       );
     }
 
-    await sendNotifications(usersNotifications);
+    await sendWatcherNotifications(watcherName, usersNotifications);
   });
 }
 
