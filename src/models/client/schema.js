@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
+const {
+  constants: { CLIENT_KINDS },
+} = require('@notify-watcher/core');
 
 const { Schema } = mongoose;
-const clients = ['telegram-bot', 'email']; // TODO: read from available clients.
 
 const schema = new Schema({
   kind: {
     type: String,
-    enum: clients,
+    enum: Object.keys(CLIENT_KINDS),
     required: true,
     index: true,
   },
