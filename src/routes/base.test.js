@@ -1,4 +1,4 @@
-const request = require('../test/supertest');
+const request = require('../tests/supertest');
 
 describe('basic route tests', () => {
   test('get home route GET /', async () => {

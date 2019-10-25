@@ -1,5 +1,5 @@
 const createError = require('http-errors');
-const { Factory, factoryNames } = require('../test-utils/factories');
+const { Factory, factoryNames } = require('../tests/factories');
 const { errorsMiddleware, defaultErrorMessage } = require('./errors');
 
 describe('errorsMiddleware', () => {

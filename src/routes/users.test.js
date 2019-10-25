@@ -1,4 +1,4 @@
-const request = require('../test/supertest');
+const request = require('../tests/supertest');
 const User = require('../models/user');
 const emails = require('../emails');
 
