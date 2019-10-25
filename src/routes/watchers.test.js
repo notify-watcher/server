@@ -1,8 +1,9 @@
 const request = require('../test/supertest');
 
-describe('watchers route tests', () => {
-  test('get all watchers  GET /watchers', async () => {
-    const response = await request.get('/watchers');
-    expect(response.status).toEqual(200);
+describe('watchers routes', () => {
+  describe('GET /watchers', () => {
+    it('should return 200', async () => {
+      await request.get('/watchers').expect(200);
+    });
   });
 });

@@ -3,18 +3,18 @@ const {
 } = require('@notify-watcher/core');
 const request = require('../test/supertest');
 const User = require('../models/user');
+const { HTTP_CODES } = require('../test/constants');
 
 describe('clients routes', () => {
   describe('POST clients/register', () => {
     const registerUrl = '/clients/register';
 
     describe('for a non existent user', () => {
-      it('should return 404', async () => {
-        await request
+      it('should return "not found"', () =>
+        request
           .post(registerUrl)
           .send({ email: 'invalid email' })
-          .expect(404);
-      });
+          .expect(HTTP_CODES.notFound));
     });
 
     describe('for an existent user', () => {
@@ -32,21 +32,20 @@ describe('clients routes', () => {
       afterAll(() => user.deleteOne());
 
       describe('with a invalid token', () => {
-        it('should return 401', async () => {
-          await request
+        it('should return "unauthorized"', () =>
+          request
             .post(registerUrl)
             .send({
               email: userEmail,
               token: 'invalid',
               clientData,
             })
-            .expect(401);
-        });
+            .expect(HTTP_CODES.unauthorized));
       });
 
       describe('with an invalid client data', () => {
-        it('should return 500', async () => {
-          await request
+        it('should return "bad request"', () =>
+          request
             .post(registerUrl)
             .send({
               email: userEmail,
@@ -55,8 +54,7 @@ describe('clients routes', () => {
                 kind: 'invalid-kind',
               },
             })
-            .expect(500);
-        });
+            .expect(HTTP_CODES.badRequest));
       });
 
       describe('with a valid token and client data', () => {
@@ -68,8 +66,9 @@ describe('clients routes', () => {
             clientData,
           });
         });
-        it('should return 200', () => expect(response.status).toEqual(200));
-        it('should send an email', () =>
+        it('should return "ok"', () =>
+          expect(response.status).toEqual(HTTP_CODES.ok));
+        it('should return a client', () =>
           expect(response.body).toHaveProperty('client'));
       });
     });
