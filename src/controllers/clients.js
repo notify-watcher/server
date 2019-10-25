@@ -11,7 +11,7 @@ async function register(ctx) {
   try {
     const client = await user.addClient(clientData);
     ctx.body = { client };
-  } catch {
+  } catch (err) {
     ctx.throw(createError.BadRequest('Invalid client'));
   }
 }
