@@ -8,61 +8,69 @@ describe('clients routes', () => {
   describe('POST clients/register', () => {
     const registerUrl = '/clients/register';
 
-    test('for a non existent user', async () => {
-      await request
-        .post(registerUrl)
-        .send({ email: 'invalid email' })
-        .expect(404);
+    describe('for a non existent user', () => {
+      it('should return 404', async () => {
+        await request
+          .post(registerUrl)
+          .send({ email: 'invalid email' })
+          .expect(404);
+      });
     });
 
     describe('for an existent user', () => {
       const clientData = { kind: CLIENT_KINDS.telegram };
       const userEmail = 'user-client-register@example.org';
       let user;
+      let token;
 
       beforeAll(async () => {
         user = await User.create({ email: userEmail });
         await user.createSecret();
+        token = await user.generateToken();
       });
 
       afterAll(() => user.deleteOne());
 
-      test('with a invalid token', async () => {
-        await request
-          .post(registerUrl)
-          .send({
-            email: userEmail,
-            token: 'invalid',
-            clientData,
-          })
-          .expect(401);
+      describe('with a invalid token', () => {
+        it('should return 401', async () => {
+          await request
+            .post(registerUrl)
+            .send({
+              email: userEmail,
+              token: 'invalid',
+              clientData,
+            })
+            .expect(401);
+        });
       });
 
-      test('with an invalid client data', async () => {
-        const token = await user.generateToken();
-        await request
-          .post(registerUrl)
-          .send({
-            email: userEmail,
-            token,
-            clientData: {
-              kind: 'invalid-kind',
-            },
-          })
-          .expect(500);
+      describe('with an invalid client data', () => {
+        it('should return 500', async () => {
+          await request
+            .post(registerUrl)
+            .send({
+              email: userEmail,
+              token,
+              clientData: {
+                kind: 'invalid-kind',
+              },
+            })
+            .expect(500);
+        });
       });
 
-      test('with a valid token and client data', async () => {
-        const token = await user.generateToken();
-        const response = await request
-          .post(registerUrl)
-          .send({
+      describe('with a valid token and client data', () => {
+        let response;
+        beforeAll(async () => {
+          response = await request.post(registerUrl).send({
             email: userEmail,
             token,
             clientData,
-          })
-          .expect(200);
-        expect(response.body).toHaveProperty('client');
+          });
+        });
+        it('should return 200', () => expect(response.status).toEqual(200));
+        it('should send an email', () =>
+          expect(response.body).toHaveProperty('client'));
       });
     });
   });
