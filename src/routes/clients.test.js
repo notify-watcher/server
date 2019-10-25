@@ -8,6 +8,17 @@ const { HTTP_CODES } = require('../test/constants');
 describe('clients routes', () => {
   describe('POST clients/register', () => {
     const registerUrl = '/clients/register';
+    const userEmail = 'user-client-register@example.org';
+    let user;
+    let token;
+
+    beforeAll(async () => {
+      user = await User.create({ email: userEmail });
+      await user.createSecret();
+      token = await user.generateToken();
+    });
+
+    afterAll(() => user.deleteOne());
 
     describe('for a non existent user', () => {
       it('should return "not found"', () =>
@@ -19,17 +30,6 @@ describe('clients routes', () => {
 
     describe('for an existent user', () => {
       const clientData = { kind: CLIENT_KINDS.telegram };
-      const userEmail = 'user-client-register@example.org';
-      let user;
-      let token;
-
-      beforeAll(async () => {
-        user = await User.create({ email: userEmail });
-        await user.createSecret();
-        token = await user.generateToken();
-      });
-
-      afterAll(() => user.deleteOne());
 
       describe('with a invalid token', () => {
         it('should return "unauthorized"', () =>
@@ -58,18 +58,18 @@ describe('clients routes', () => {
       });
 
       describe('with a valid token and client data', () => {
-        let response;
-        beforeAll(async () => {
-          response = await request.post(registerUrl).send({
+        let validResponse;
+        beforeEach(async () => {
+          validResponse = await request.post(registerUrl).send({
             email: userEmail,
             token,
             clientData,
           });
         });
         it('should return "ok"', () =>
-          expect(response.status).toEqual(HTTP_CODES.ok));
+          expect(validResponse.status).toEqual(HTTP_CODES.ok));
         it('should return a client', () =>
-          expect(response.body).toHaveProperty('client'));
+          expect(validResponse.body).toHaveProperty('client'));
       });
     });
   });
