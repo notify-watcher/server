@@ -2,16 +2,23 @@
 const util = require('util');
 const { env } = require('../config');
 
+const clientKind = 'email';
+const clientRequiredKeys = ['email'];
+
 const LOCAL_ENV = {
-  clientsNotifications: false,
+  clientHandler: false,
 };
 
-function sendWatcherNotifications(watcherName, clientsNotifications) {
-  if (env.isDev && LOCAL_ENV.clientsNotifications)
+function clientHandler(watcherName, clientsNotifications) {
+  if (env.isDev && LOCAL_ENV.clientHandler)
     console.log(
       `email notifications for ${watcherName} watcher\n`,
       util.inspect(clientsNotifications, { showHidden: false, depth: 2 }),
     );
 }
 
-module.exports = { sendWatcherNotifications };
+module.exports = {
+  clientHandler,
+  clientKind,
+  clientRequiredKeys,
+};
