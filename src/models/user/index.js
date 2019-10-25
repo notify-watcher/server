@@ -35,8 +35,12 @@ class User {
     return _.last(this.clients);
   }
 
-  updateSubscriptions(subscriptionsData) {
-    this.subscriptions = subscriptionsData;
+  updateSubscription(watcher, auth, notificationTypes) {
+    const index = _.findIndex(this.subscriptions, { watcher });
+    let baseSubscription =
+      index > 0 ? this.subscriptions[index] : { watcher, snapshot: {} };
+    baseSubscription = { ...baseSubscription, auth, notificationTypes };
+    this.subscriptions.splice(index, 1, baseSubscription);
     return this.save();
   }
 }
