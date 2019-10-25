@@ -202,14 +202,14 @@ async function runWatchersAuth(watchers) {
     await Promise.all(runWatchersPromises);
     if (usersNotifications.length === 0) return;
 
+    sendWatcherNotifications(watcherName, usersNotifications);
+
     if (env.isDev && LOCAL_ENV.watcherAuthRun) {
       console.log(`\n# Watcher ${watcherName} usersNotifications`);
       console.log(
         util.inspect(usersNotifications, { showHidden: false, depth: 3 }),
       );
     }
-
-    await sendWatcherNotifications(watcherName, usersNotifications);
   });
 }
 
@@ -250,6 +250,7 @@ async function runWatchersNoAuth(watchers) {
       user,
       notifications,
     }));
+    sendWatcherNotifications(watcherName, usersNotifications);
 
     if (env.isDev && LOCAL_ENV.watcherNoAuthRun) {
       console.log(`\n# Watcher ${watcherName} usersNotifications`);
@@ -257,8 +258,6 @@ async function runWatchersNoAuth(watchers) {
         util.inspect(usersNotifications, { showHidden: false, depth: 3 }),
       );
     }
-
-    await sendWatcherNotifications(watcherName, usersNotifications);
   });
 }
 
