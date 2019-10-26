@@ -30,8 +30,9 @@
     "download-watchers": "DOWNLOAD_WATCHERS=true node src/watchers/download-watchers.js",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "postrelease": "git push --follow-tags",
+    "prerelease": "/scripts/prerelease.sh",
     "release": "standard-version",
+    "postrelease": "git push --follow-tags && gh-release",
     "start": "node src/index.js",
     "test:ci": "jest",
     "test": "jest --watchAll"
@@ -62,6 +63,7 @@
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jest": "^22.19.0",
     "eslint-plugin-prettier": "^3.1.1",
+    "gh-pages": "^2.1.1",
     "jest": "^24.9.0",
     "nodemon": "^1.19.3",
     "prettier": "^1.18.2",
