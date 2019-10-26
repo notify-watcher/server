@@ -1,6 +1,6 @@
 {
   "name": "@notify-watcher/server",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "src/index.js",
   "repository": "https://github.com/notify-watcher/server.git",
@@ -30,7 +30,7 @@
     "download-watchers": "DOWNLOAD_WATCHERS=true node src/watchers/download-watchers.js",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "prerelease": "/scripts/prerelease.sh",
+    "prerelease": "scripts/prerelease.sh",
     "release": "standard-version",
     "postrelease": "git push --follow-tags && gh-release",
     "start": "node src/index.js",
