@@ -1,4 +1,4 @@
-const request = require('../test/supertest');
+const request = require('../tests/supertest');
 const { HTTP_CODES } = require('../constants');
 
 describe('basic routes', () => {

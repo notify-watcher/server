@@ -5,9 +5,10 @@ const { HTTP_CODES } = require('../constants');
 
 describe('users routes', () => {
   describe('POST users/send-token', () => {
+    const sendToken = body => request.post('/users/send-token').send(body);
+
     let response;
-    const sendTokenUrl = '/users/send-token';
-    const userEmail = 'test1@example.org';
+    const email = 'send-token@example.org';
     const sendTokenEmailSpy = jest.spyOn(emails, 'sendToken');
 
     afterAll(() => sendTokenEmailSpy.mockRestore());
@@ -15,7 +16,7 @@ describe('users routes', () => {
     describe('to a new user', () => {
       beforeEach(async () => {
         sendTokenEmailSpy.mockClear();
-        response = await request.post(sendTokenUrl).send({ email: userEmail });
+        response = await sendToken({ email });
       });
 
       it('should return "created"', () =>
@@ -26,12 +27,12 @@ describe('users routes', () => {
 
     describe('to an existent user', () => {
       beforeEach(async () => {
-        const user = await User.create({ email: userEmail });
+        const user = await User.create({ email });
         await user.createSecret();
-        response = await request.post(sendTokenUrl).send({ email: userEmail });
+        response = await sendToken({ email });
       });
 
-      afterEach(async () => sendTokenEmailSpy.mockClear());
+      afterEach(() => sendTokenEmailSpy.mockClear());
 
       it('should return "no content"', () =>
         expect(response.status).toEqual(HTTP_CODES.noContent));
