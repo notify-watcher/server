@@ -6,13 +6,12 @@ mongoose.Promise = global.Promise;
 /**
  * Connect to the database.
  */
-const connect = async databaseUrl => {
-  return mongoose.connect(databaseUrl, {
+const connect = databaseUrl =>
+  mongoose.connect(databaseUrl, {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
-};
 
 /**
  * Drop database and close the connection.
