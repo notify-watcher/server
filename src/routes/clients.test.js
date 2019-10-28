@@ -19,11 +19,13 @@ describe('clients routes', () => {
       let user;
       let token;
 
-      beforeEach(async () => {
+      beforeAll(async () => {
         user = await User.create({ email: 'user-client-register@example.org' });
         await user.createSecret();
         token = await user.generateToken();
       });
+
+      afterAll(() => user.deleteOne());
 
       describe('with a invalid token', () => {
         it('should return "unauthorized"', () =>
@@ -47,13 +49,15 @@ describe('clients routes', () => {
 
       describe('with a valid token and client data', () => {
         let validResponse;
-        beforeEach(async () => {
+
+        beforeAll(async () => {
           validResponse = await register({
             email: user.email,
             token,
             clientData,
           });
         });
+
         it('should return "ok"', () =>
           expect(validResponse.status).toEqual(HTTP_CODES.ok));
         it('should return a client', () =>

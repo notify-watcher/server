@@ -26,9 +26,16 @@ describe('users routes', () => {
     });
 
     describe('to an existent user', () => {
-      beforeEach(async () => {
-        const user = await User.create({ email });
+      let user;
+
+      beforeAll(async () => {
+        user = await User.create({ email });
         await user.createSecret();
+      });
+
+      afterAll(() => user.deleteOne());
+
+      beforeEach(async () => {
         response = await sendToken({ email });
       });
 
