@@ -9,6 +9,6 @@ jest.mock('../../src/emails');
 beforeAll(() => mongoose.connect(config.DATABASE_URL));
 
 /**
- * Remove and close the db and server.
+ * Disconnect from the database.
  */
 afterAll(() => mongoose.close());
