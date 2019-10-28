@@ -12,8 +12,17 @@ describe('watchers routes', () => {
     });
 
     it('should return "ok"', () => expect(response.status).toBe(HTTP_CODES.ok));
+
     it('should be an array', () => expect(response.body).toBeInstanceOf(Array));
+
     it('should have same length as watchersList', () =>
       expect(response.body).toHaveLength(watchersList.length));
+
+    it('should contain name, displayName and description', () =>
+      expect(
+        response.body.every(
+          watcher => watcher.name && watcher.displayName && watcher.description,
+        ),
+      ).toBeTruthy());
   });
 });
