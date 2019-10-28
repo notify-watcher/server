@@ -3,14 +3,17 @@ const config = require('../config');
 
 jest.mock('../../src/emails');
 
-let testDatabase;
+/**
+ * Connect to a new database before running any tests.
+ */
+beforeAll(() => mongoose.connect(config.DATABASE_URL));
 
-beforeAll(async () => {
-  testDatabase = await mongoose.dbConnect(config.DATABASE_URL);
-});
+/**
+ * Clear all test data after every test.
+ */
+afterEach(() => mongoose.clearDatabase());
 
-afterAll(async () => {
-  const { connection } = testDatabase;
-  await connection.db.dropDatabase();
-  await connection.close();
-});
+/**
+ * Remove and close the db and server.
+ */
+afterAll(() => mongoose.dropDatabase());

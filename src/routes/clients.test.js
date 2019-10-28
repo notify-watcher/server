@@ -3,22 +3,11 @@ const {
 } = require('@notify-watcher/core');
 const request = require('../test/supertest');
 const User = require('../models/user');
-const { HTTP_CODES } = require('../test/constants');
+const { HTTP_CODES } = require('../constants');
 
 describe('clients routes', () => {
   describe('POST clients/register', () => {
     const registerUrl = '/clients/register';
-    const userEmail = 'user-client-register@example.org';
-    let user;
-    let token;
-
-    beforeAll(async () => {
-      user = await User.create({ email: userEmail });
-      await user.createSecret();
-      token = await user.generateToken();
-    });
-
-    afterAll(() => user.deleteOne());
 
     describe('for a non existent user', () => {
       it('should return "not found"', () =>
@@ -30,6 +19,15 @@ describe('clients routes', () => {
 
     describe('for an existent user', () => {
       const clientData = { kind: CLIENT_KINDS.telegram };
+      const userEmail = 'user-client-register@example.org';
+      let user;
+      let token;
+
+      beforeEach(async () => {
+        user = await User.create({ email: userEmail });
+        await user.createSecret();
+        token = await user.generateToken();
+      });
 
       describe('with a invalid token', () => {
         it('should return "unauthorized"', () =>
