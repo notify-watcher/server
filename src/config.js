@@ -27,8 +27,8 @@ function databaseUrl() {
   return 'mongodb://localhost/notify-watcher';
 }
 
-// TODO: We can add authentication for a repo using { username, token }
-// Then we clone as https://username:token@github.com/org/repo
+// We can clone a privaty repo using the following url format
+// https://<username>:<token>@github.com/<org>/<repo>
 
 /**
  * An array of all repos from where to download watchers.
