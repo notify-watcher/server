@@ -1,5 +1,6 @@
 const fs = require('fs-extra');
 const path = require('path');
+const _ = require('lodash');
 const {
   constants: { TIMEFRAMES },
   validators: { validateAuth, validateLibs, validateTimeframe },
@@ -45,11 +46,9 @@ function loadWatchers(watchersPath) {
       validateTimeframe(config.timeframe, name, { verbose: true }),
     );
 
-  const watchersList = watchers.map(({ name, displayName, description }) => ({
-    description,
-    displayName,
-    name,
-  }));
+  const watchersList = watchers.map(watcher =>
+    _.pick(watcher, ['name', 'displayName', 'description']),
+  );
   const watchersObject = watchers.reduce(
     (object, watcher) => ({ ...object, [watcher.name]: watcher }),
     {},
