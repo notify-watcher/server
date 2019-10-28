@@ -27,7 +27,7 @@ function databaseUrl() {
   return 'mongodb://localhost/notify-watcher';
 }
 
-// We can clone a privaty repo using the following url format
+// We can clone a private repo using the following url format
 // https://<username>:<token>@github.com/<org>/<repo>
 
 /**
