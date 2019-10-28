@@ -20,13 +20,18 @@ function loadWatchers(watchersPath) {
   const watchers = loadWatchersNames(watchersPath)
     .map(name => {
       const watcherPath = path.join(WATCHERS_PATH, name);
-      // eslint-disable-next-line global-require, import/no-dynamic-require
-      const { config: watcherConfig, checkAuth, watch } = require(watcherPath);
+      const {
+        config: { name: _, displayName, description, ...watcherConfig },
+        checkAuth,
+        watch,
+      } = require(watcherPath); // eslint-disable-line global-require, import/no-dynamic-require
       return {
         config: watcherConfig,
         checkAuth,
         watch,
         name,
+        description,
+        displayName,
         path: watcherPath,
       };
     })
@@ -40,6 +45,16 @@ function loadWatchers(watchersPath) {
       validateTimeframe(config.timeframe, name, { verbose: true }),
     );
 
+  const watchersList = watchers.map(({ name, displayName, description }) => ({
+    description,
+    displayName,
+    name,
+  }));
+  const watchersObject = watchers.reduce(
+    (object, watcher) => ({ ...object, [watcher.name]: watcher }),
+    {},
+  );
+
   const minuteWatchers = watchers.filter(
     watcher => watcher.config.timeframe.type === TIMEFRAMES.minute,
   );
@@ -48,8 +63,10 @@ function loadWatchers(watchersPath) {
       watcher.config.timeframe.type === TIMEFRAMES.hour ||
       watcher.config.timeframe.type === TIMEFRAMES.day,
   );
+
   return {
-    watchers,
+    watchersList,
+    watchersObject,
     minuteWatchersAuth: minuteWatchers.filter(({ config: c }) => c.auth),
     minuteWatchersNoAuth: minuteWatchers.filter(({ config: c }) => !c.auth),
     hourWatchersAuth: hourWatchers.filter(({ config: c }) => c.auth),

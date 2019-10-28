@@ -78,7 +78,10 @@ const config = {
   WATCHERS_LIST_DOWNLOAD_ALL_KEY: 'all',
   WATCHERS_PATH: path.resolve(path.join('.', 'watchers')),
   WATCHERS_TEMP_PATH: path.resolve(path.join(TEMP_DIR_PATH, 'watchers')),
-  WATCHERS: [],
+  WATCHERS: {
+    list: [],
+    watchers: {},
+  },
 };
 
 module.exports = config;
