@@ -22,7 +22,7 @@ function loadWatchers(watchersPath) {
     .map(name => {
       const watcherPath = path.join(WATCHERS_PATH, name);
       const {
-        config: { name: _, displayName, description, ...watcherConfig },
+        config: { name: unused, displayName, description, ...watcherConfig },
         checkAuth,
         watch,
       } = require(watcherPath); // eslint-disable-line global-require, import/no-dynamic-require
