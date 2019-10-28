@@ -6,22 +6,28 @@ mongoose.Promise = global.Promise;
 /**
  * Connect to the database.
  */
-const connect = databaseUrl =>
-  mongoose.connect(databaseUrl, {
+async function connect(databaseUrl) {
+  return mongoose.connect(databaseUrl, {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
+}
 
 /**
  * Drop database and close the connection.
  */
-const dropDatabase = async () => {
+async function dropDatabase() {
   await mongoose.connection.dropDatabase();
   await mongoose.connection.close();
-};
+}
+
+function close() {
+  return mongoose.connection.close;
+}
 
 module.exports = {
+  close,
   connect,
   dropDatabase,
 };

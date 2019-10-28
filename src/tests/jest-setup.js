@@ -11,4 +11,4 @@ beforeAll(() => mongoose.connect(config.DATABASE_URL));
 /**
  * Remove and close the db and server.
  */
-afterAll(() => mongoose.dropDatabase());
+afterAll(() => mongoose.close());
