@@ -6,7 +6,7 @@ mongoose.Promise = global.Promise;
 /**
  * Connect to the database.
  */
-async function connect(databaseUrl) {
+function connect(databaseUrl) {
   return mongoose.connect(databaseUrl, {
     useCreateIndex: true,
     useNewUrlParser: true,
