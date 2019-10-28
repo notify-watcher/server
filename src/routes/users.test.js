@@ -1,36 +1,53 @@
 const request = require('../tests/supertest');
 const User = require('../models/user');
 const emails = require('../emails');
+const { HTTP_CODES } = require('../constants');
 
 describe('users routes', () => {
   describe('POST users/send-token', () => {
-    const sendTokenUrl = '/users/send-token';
-    const userEmail = 'test1@example.org';
+    const sendToken = body => request.post('/users/send-token').send(body);
     const sendTokenEmailSpy = jest.spyOn(emails, 'sendToken');
 
-    beforeEach(async () => {
-      sendTokenEmailSpy.mockReset();
+    const email = 'send-token@example.org';
+    let response;
+
+    afterAll(() => sendTokenEmailSpy.mockRestore());
+
+    describe('to a non-existing user', () => {
+      beforeAll(async () => {
+        response = await sendToken({ email });
+      });
+
+      afterAll(async () => {
+        const user = await User.findOne({ email });
+        await user.remove();
+        sendTokenEmailSpy.mockClear();
+      });
+
+      it('should return "created"', () =>
+        expect(response.status).toEqual(HTTP_CODES.created));
+      it('should send an email', () =>
+        expect(sendTokenEmailSpy).toHaveBeenCalled());
     });
 
-    afterAll(async () => {
-      await User.deleteOne({ email: userEmail });
-      sendTokenEmailSpy.mockRestore();
-    });
+    describe('to an existent user', () => {
+      let user;
 
-    test('to a new user', async () => {
-      await request
-        .post(sendTokenUrl)
-        .send({ email: userEmail })
-        .expect(201);
-      expect(sendTokenEmailSpy).toHaveBeenCalled();
-    });
+      beforeAll(async () => {
+        user = await User.create({ email });
+        await user.createSecret();
+        response = await sendToken({ email });
+      });
 
-    test('to an existent user', async () => {
-      await request
-        .post(sendTokenUrl)
-        .send({ email: userEmail })
-        .expect(204);
-      expect(sendTokenEmailSpy).toHaveBeenCalled();
+      afterAll(() => {
+        sendTokenEmailSpy.mockClear();
+        user.remove();
+      });
+
+      it('should return "no content"', () =>
+        expect(response.status).toEqual(HTTP_CODES.noContent));
+      it('should send an email', () =>
+        expect(sendTokenEmailSpy).toHaveBeenCalled());
     });
   });
 });

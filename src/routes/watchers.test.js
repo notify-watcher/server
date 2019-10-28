@@ -1,8 +1,9 @@
 const request = require('../tests/supertest');
+const { HTTP_CODES } = require('../constants');
 
-describe('watchers route tests', () => {
-  test('get all watchers  GET /watchers', async () => {
-    const response = await request.get('/watchers');
-    expect(response.status).toEqual(200);
+describe('watchers routes', () => {
+  describe('GET /watchers', () => {
+    it('should return "ok"', () =>
+      request.get('/watchers').expect(HTTP_CODES.ok));
   });
 });

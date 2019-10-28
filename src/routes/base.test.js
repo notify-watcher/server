@@ -1,9 +1,8 @@
 const request = require('../tests/supertest');
+const { HTTP_CODES } = require('../constants');
 
-describe('basic route tests', () => {
-  test('get home route GET /', async () => {
-    const response = await request.get('/');
-    expect(response.status).toEqual(200);
-    expect(response.text).toContain('Hello World!');
+describe('basic routes', () => {
+  describe('GET /', () => {
+    it('should return "ok"', () => request.get('/').expect(HTTP_CODES.ok));
   });
 });

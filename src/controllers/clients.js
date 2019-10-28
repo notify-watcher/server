@@ -8,8 +8,12 @@ async function register(ctx) {
   );
   const verification = await user.verifyToken(token);
   ctx.assert(verification, createError.Unauthorized('Invalid code'));
-  const client = await user.addClient(clientData);
-  ctx.body = { client };
+  try {
+    const client = await user.addClient(clientData);
+    ctx.body = { client };
+  } catch (err) {
+    ctx.throw(createError.BadRequest('Invalid client'));
+  }
 }
 
 module.exports = {
