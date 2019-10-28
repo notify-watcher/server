@@ -5,6 +5,7 @@ mongoose.Promise = global.Promise;
 
 function dbConnect(databaseUrl) {
   return mongoose.connect(databaseUrl, {
+    useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
