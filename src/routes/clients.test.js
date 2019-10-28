@@ -25,9 +25,9 @@ describe('clients routes', () => {
         token = await user.generateToken();
       });
 
-      afterAll(() => user.deleteOne());
+      afterAll(() => user.remove());
 
-      describe('with a invalid token', () => {
+      describe('with an invalid token', () => {
         it('should return "unauthorized"', () =>
           register({
             email: user.email,
