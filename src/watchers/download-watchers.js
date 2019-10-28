@@ -4,7 +4,6 @@ const fs = require('fs-extra');
 const path = require('path');
 const git = require('nodegit');
 const config = require('../config');
-const { WATCHERS_LIST, ALL_WATCHERS_KEY } = require('./list');
 const { loadWatchersNames } = require('./load-watchers.js');
 
 function ref(branch) {
@@ -40,11 +39,13 @@ async function downloadWatchers() {
   if (!config.DOWNLOAD_WATCHERS) return;
   fs.emptyDirSync(config.WATCHERS_TEMP_PATH);
   fs.emptyDirSync(config.WATCHERS_PATH);
-  console.log(util.inspect(WATCHERS_LIST, { showHidden: false, depth: 2 }));
+  console.log(
+    util.inspect(config.WATCHERS_LIST, { showHidden: false, depth: 2 }),
+  );
   console.log();
 
   await Promise.all(
-    WATCHERS_LIST.map(async (watcher, index) => {
+    config.WATCHERS_LIST.map(async (watcher, index) => {
       const repoTempPath = `${config.WATCHERS_TEMP_PATH}/${index}`;
       const { url, branch, commit, watchers } = watcher;
 
@@ -63,7 +64,9 @@ async function downloadWatchers() {
       const watchersNames = loadWatchersNames(repoTempPath)
         .filter(name => name[0] !== '.')
         .filter(
-          name => watchers === ALL_WATCHERS_KEY || watchers.includes(name),
+          name =>
+            watchers === config.WATCHERS_LIST_DOWNLOAD_ALL_KEY ||
+            watchers.includes(name),
         );
       console.log(
         `i:${index} Saving ${watchersNames} from ${url}@${branch || commit}`,
