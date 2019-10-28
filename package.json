@@ -1,6 +1,6 @@
 {
   "name": "@notify-watcher/server",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "src/index.js",
   "repository": "https://github.com/notify-watcher/server.git",
@@ -30,8 +30,9 @@
     "download-watchers": "DOWNLOAD_WATCHERS=true node src/watchers/download-watchers.js",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "postrelease": "git push --follow-tags",
+    "prerelease": "scripts/prerelease.sh",
     "release": "standard-version",
+    "postrelease": "git push --follow-tags && gh-release -y",
     "start": "node src/index.js",
     "test:ci": "jest",
     "test": "jest --watchAll"
@@ -39,6 +40,7 @@
   "dependencies": {
     "@notify-watcher/core": "^0.3.2",
     "@notify-watcher/executor": "^0.1.0",
+    "axios": "^0.19.0",
     "cron": "^1.7.2",
     "email-templates": "^6.0.3",
     "fs-extra": "^8.1.0",
@@ -52,8 +54,7 @@
     "mongoose": "^5.7.4",
     "nodegit": "^0.26.2",
     "path": "^0.12.7",
-    "speakeasy": "^2.0.0",
-    "supertest": "^4.0.2"
+    "speakeasy": "^2.0.0"
   },
   "devDependencies": {
     "eslint": "^6.5.1",
@@ -62,10 +63,12 @@
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jest": "^22.19.0",
     "eslint-plugin-prettier": "^3.1.1",
+    "gh-release": "^3.5.0",
     "jest": "^24.9.0",
     "nodemon": "^1.19.3",
     "prettier": "^1.18.2",
     "rosie": "^2.0.1",
-    "standard-version": "^7.0.0"
+    "standard-version": "^7.0.0",
+    "supertest": "^4.0.2"
   }
 }

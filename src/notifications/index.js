@@ -1,36 +1,7 @@
 /* eslint-disable no-console */
 const util = require('util');
-const {
-  constants: { CLIENT_KINDS },
-} = require('@notify-watcher/core');
+const { clientHandlers, clientKinds } = require('./clients');
 const { env } = require('../config');
-const { sendWatcherNotifications: emailHandler } = require('./email');
-const { sendWatcherNotifications: telegramHandler } = require('./telegram');
-
-// TODO: delete this when connecting to the db
-// https://github.com/notify-watcher/server/issues/22
-const MOCK_CLIENTS = {
-  user1TelegramChatId1: {
-    kind: CLIENT_KINDS.telegram,
-    chatId: 'user1TelegramChatId1',
-  },
-  user2TelegramChatId1: {
-    kind: CLIENT_KINDS.telegram,
-    chatId: 'user2TelegramChatId1',
-  },
-  user2TelegramChatId2: {
-    kind: CLIENT_KINDS.telegram,
-    chatId: 'user2TelegramChatId2',
-  },
-  user1Email1: {
-    kind: CLIENT_KINDS.email,
-    email: 'user1Email1@example.com',
-  },
-  user2Email1: {
-    kind: CLIENT_KINDS.email,
-    email: 'user2Email1@example.com',
-  },
-};
 
 const LOCAL_ENV = {
   usersNotifications: false,
@@ -38,9 +9,29 @@ const LOCAL_ENV = {
   clientKindsNotifications: false,
 };
 
-const CLIENT_KIND_HANDLERS = {
-  [CLIENT_KINDS.telegram]: telegramHandler,
-  [CLIENT_KINDS.email]: emailHandler,
+// TODO: delete this when connecting to the db
+// https://github.com/notify-watcher/server/issues/22
+const MOCK_CLIENTS = {
+  user1TelegramChatId1: {
+    kind: clientKinds.telegram,
+    chatId: '784232',
+  },
+  user2TelegramChatId1: {
+    kind: clientKinds.telegram,
+    chatId: '784232',
+  },
+  user2TelegramChatId2: {
+    kind: clientKinds.telegram,
+    chatId: 'user2TelegramChatId2',
+  },
+  user1Email1: {
+    kind: clientKinds.email,
+    email: 'user1Email1@example.com',
+  },
+  user2Email1: {
+    kind: clientKinds.email,
+    email: 'user2Email1@example.com',
+  },
 };
 
 function userClientForClientId(user, clientId) {
@@ -79,7 +70,7 @@ function groupUsersNotifications(usersNotifications, watcherName) {
 }
 
 function groupClientsNotifications(clientsNotifications) {
-  return Object.keys(CLIENT_KINDS).reduce(
+  return Object.keys(clientKinds).reduce(
     (clientKindsNotifications, clientKind) => ({
       ...clientKindsNotifications,
       [clientKind]: clientsNotifications.filter(
@@ -91,16 +82,32 @@ function groupClientsNotifications(clientsNotifications) {
 }
 
 function sendClientKindsNotifications(clientKindsNotifications, watcherName) {
-  Object.keys(clientKindsNotifications).forEach(clientKind => {
-    const clientHandler = CLIENT_KIND_HANDLERS[clientKind];
-    if (!clientHandler) {
-      console.warn(`WARN: No clientHandler for clientKind ${clientKind}`);
-      return;
-    }
+  const requests = Object.keys(clientKindsNotifications).map(
+    async clientKind => {
+      const clientHandler = clientHandlers[clientKind];
+      if (!clientHandler) {
+        console.warn(`WARN: No clientHandler for client ${clientKind}`);
+        return;
+      }
+      if (typeof clientHandler !== 'function') {
+        console.warn(
+          `WARN: No clientHandler is not a function for client ${clientKind}`,
+        );
+        return;
+      }
 
-    const clientKindNotifications = clientKindsNotifications[clientKind];
-    clientHandler(watcherName, clientKindNotifications);
-  });
+      const clientKindNotifications = clientKindsNotifications[clientKind];
+      try {
+        await clientHandler(watcherName, clientKindNotifications);
+      } catch (error) {
+        // TODO: Rollbar
+        console.error(
+          `ERR: Sending notifications to client ${clientKind} from watcher ${watcherName}\n${error}`,
+        );
+      }
+    },
+  );
+  return Promise.all(requests);
 }
 
 /**
@@ -116,7 +123,6 @@ function sendWatcherNotifications(watcherName, usersNotifications) {
   const clientKindsNotifications = groupClientsNotifications(
     clientsNotifications,
   );
-  sendClientKindsNotifications(clientKindsNotifications, watcherName);
 
   if (env.isDev && LOCAL_ENV.usersNotifications)
     console.log(
@@ -133,9 +139,10 @@ function sendWatcherNotifications(watcherName, usersNotifications) {
       `clientKindsNotifications ${watcherName}\n`,
       util.inspect(clientKindsNotifications, { showHidden: false, depth: 2 }),
     );
+
+  return sendClientKindsNotifications(clientKindsNotifications, watcherName);
 }
 
 module.exports = {
-  CLIENT_KIND_HANDLERS,
   sendWatcherNotifications,
 };

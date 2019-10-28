@@ -1,17 +1,31 @@
 /* eslint-disable no-console */
 const util = require('util');
-const { env } = require('../config');
+const { env, clients } = require('../config');
+const axios = require('./axios');
+
+const clientKind = 'telegram';
+const clientRequiredKeys = ['chatId'];
+const { url } = clients[clientKind];
 
 const LOCAL_ENV = {
-  clientsNotifications: false,
+  clientHandler: false,
 };
 
-function sendWatcherNotifications(watcherName, clientsNotifications) {
-  if (env.isDev && LOCAL_ENV.clientsNotifications)
+function clientHandler(watcherName, clientsNotifications) {
+  if (env.isDev && LOCAL_ENV.clientHandler)
     console.log(
       `telegram notifications for ${watcherName} watcher\n`,
       util.inspect(clientsNotifications, { showHidden: false, depth: 2 }),
     );
+
+  const chatIdsNotifications = clientsNotifications.map(
+    ({ client: { chatId }, notifications }) => ({ chatId, notifications }),
+  );
+  return axios.post(`${url}/notifications`, chatIdsNotifications);
 }
 
-module.exports = { sendWatcherNotifications };
+module.exports = {
+  clientHandler,
+  clientKind,
+  clientRequiredKeys,
+};
