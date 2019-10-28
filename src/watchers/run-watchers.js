@@ -4,6 +4,7 @@ const {
   constants: { TIMEFRAMES },
 } = require('@notify-watcher/core');
 const { env } = require('../config.js');
+const { HTTP_CODES } = require('../constants');
 const { sendWatcherNotifications } = require('../notifications');
 const executor = require('./executor');
 
@@ -173,10 +174,30 @@ async function runWatchersAuth(watchers) {
       await startRunning(id);
       const auth = await getUserWatcherAuth(user, watcherName);
       const previousSnapshot = await getUserWatcherSnapshot(user, watcherName);
-      const { notifications, error, snapshot } = await executor.run(watch, {
-        auth,
-        snapshot: previousSnapshot,
-      });
+
+      let response;
+      try {
+        response = await executor.run(watch, {
+          auth,
+          snapshot: previousSnapshot,
+        });
+      } catch (error) {
+        if (
+          error.status === HTTP_CODES.unauthorized ||
+          error.status === HTTP_CODES.forbidden
+        ) {
+          // TODO: send notification to user https://github.com/notify-watcher/server/issues/56
+          return;
+        }
+        // TODO: rollbar
+        console.warn(
+          `ERR: Watcher ${watcherName} for user ${user.name} threw error`,
+        );
+        console.warn(error);
+        return;
+      }
+
+      const { notifications, error, snapshot } = response;
       await updateUserWatcherSnapshot(user, watcherName, snapshot);
       await stopRunning(id);
       logWatcherIteration({
@@ -187,13 +208,6 @@ async function runWatchersAuth(watchers) {
         error,
         user: user.name,
       });
-
-      if (error) {
-        console.warn(
-          `ERR: Watcher ${watcherName} for user ${user.name} threw error\n${error}`,
-        );
-        return;
-      }
       if (notifications.length === 0) return;
 
       usersNotifications.push({ user, notifications });
@@ -224,9 +238,20 @@ async function runWatchersNoAuth(watchers) {
 
     await startRunning(watcherName);
     const previousSnapshot = await getSnapshotForWatcher(watcherName);
-    const { notifications, error, snapshot } = await executor.run(watch, {
-      snapshot: previousSnapshot,
-    });
+
+    let response;
+    try {
+      response = await executor.run(watch, {
+        snapshot: previousSnapshot,
+      });
+    } catch (error) {
+      // TODO: rollbar
+      console.warn(`ERR: Watcher ${watcherName} threw error`);
+      console.warn(error);
+      return;
+    }
+
+    const { notifications, error, snapshot } = response;
     await updateWatcherSnapshot(watcherName, snapshot);
     await stopRunning(watcherName);
     logWatcherIteration({
@@ -236,11 +261,6 @@ async function runWatchersNoAuth(watchers) {
       notifications,
       error,
     });
-
-    if (error) {
-      console.warn(`ERR: Watcher ${watcherName} threw error\n${error}`);
-      return;
-    }
     if (notifications.length === 0) return;
 
     const users = await usersForWatcher(watcherName);
