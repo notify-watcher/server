@@ -9,11 +9,12 @@ async function setUpWatchers() {
   await downloadWatchers();
 
   const {
-    watchers,
-    minuteWatchersAuth,
-    minuteWatchersNoAuth,
     hourWatchersAuth,
     hourWatchersNoAuth,
+    minuteWatchersAuth,
+    minuteWatchersNoAuth,
+    watchersList,
+    watchersObject,
   } = loadWatchers(WATCHERS_PATH);
 
   const minuteWatchersCronJob = new CronJob(
@@ -47,7 +48,12 @@ async function setUpWatchers() {
     console.log('hourWatchersNoAuth', hourWatchersNoAuth);
   }
 
-  return { watchers, minuteWatchersCronJob, hourWatchersCronJob };
+  return {
+    hourWatchersCronJob,
+    minuteWatchersCronJob,
+    watchersList,
+    watchersObject,
+  };
 }
 
 module.exports = setUpWatchers;
