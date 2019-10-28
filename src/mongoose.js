@@ -5,6 +5,7 @@ mongoose.Promise = global.Promise;
 
 /**
  * Connect to the database.
+ * @param {string} databaseUrl Url of the database
  */
 function connect(databaseUrl) {
   return mongoose.connect(databaseUrl, {
