@@ -3,16 +3,18 @@ const config = require('../config');
 
 jest.mock('../../src/emails');
 
+const mockWatcher = {
+  name: 'mock-watcher',
+  displayName: 'Mock Watcher',
+  description: 'A mock watcher',
+};
+
 config.WATCHERS = {
-  list: [
-    {
-      name: 'mock-watcher',
-      displayName: 'Mock Watcher',
-      description: 'A mock watcher',
-    },
-  ],
+  list: [mockWatcher],
   watchers: {
     'mock-watcher': {
+      ...mockWatcher,
+      watch: jest.fn(),
       config: {
         auth: false,
         notificationTypes: [
@@ -22,7 +24,6 @@ config.WATCHERS = {
           },
         ],
       },
-      watch: jest.fn(),
     },
   },
 };

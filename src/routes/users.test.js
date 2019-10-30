@@ -79,7 +79,7 @@ describe('users routes', () => {
           data: { chatId: 'chatId' },
         });
         const notificationType = {
-          notificationType: notificationTypes[0].notificationType,
+          notificationType: notificationTypes[0].type,
           clientIds: [client.id],
         };
         validBody = {

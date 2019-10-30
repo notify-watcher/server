@@ -26,8 +26,10 @@ async function show(ctx) {
   ctx.body = _.pick(user, ['email', 'clients', 'subscriptions']);
 }
 
+// TODO: add auth
 async function subscribe(ctx) {
-  const { email, watcher, auth, notificationTypes } = ctx.request.body;
+  const { email } = ctx.params;
+  const { watcher, auth, notificationTypes } = ctx.request.body;
   const user = await User.findOne({ email }).orFail(() =>
     createError.NotFound('No user has this email'),
   );
