@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const config = require('../config');
 
 function list(ctx) {
@@ -7,7 +8,10 @@ function list(ctx) {
 function show(ctx) {
   const { watcher: watcherName } = ctx.params;
   const watcher = config.WATCHERS.watchers[watcherName];
-  ctx.body = watcher;
+  ctx.body = {
+    ..._.pick(watcher, ['name', 'displayName', 'description']),
+    ..._.pick(watcher.config, ['auth', 'notificationTypes']),
+  };
 }
 
 module.exports = {
