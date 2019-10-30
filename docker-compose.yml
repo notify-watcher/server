@@ -18,8 +18,8 @@ services:
 
   mongo:
     image: mongo:4
-    ports:
-      - '27017:27017'
+    expose:
+      - 27017
     volumes:
       - './tmp/mongodb/db:/data/db'
       - './tmp/mongodb/config:/data/configdb'
