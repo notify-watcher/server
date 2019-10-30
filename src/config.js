@@ -1,7 +1,6 @@
 const path = require('path');
-const {
-  constants: { CLIENT_KINDS },
-} = require('@notify-watcher/core');
+// THIS GENERATES A CIRCULAR DEPENDENCY, fix later
+// const { clientKinds } = require('./notifications/clients');
 
 const TEMP_DIR_PATH = path.resolve(path.join('.', 'tmp'));
 
@@ -63,7 +62,7 @@ const config = {
     },
   },
   clients: {
-    [CLIENT_KINDS.telegram]: {
+    telegram: {
       url: NOTIFY_WATCHER_TELEGRAM_URL,
     },
   },

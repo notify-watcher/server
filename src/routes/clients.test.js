@@ -1,6 +1,4 @@
-const {
-  constants: { CLIENT_KINDS },
-} = require('@notify-watcher/core');
+const { clientKinds } = require('../notifications/clients');
 const request = require('../tests/supertest');
 const User = require('../models/user');
 const { HTTP_CODES } = require('../constants');
@@ -15,7 +13,7 @@ describe('clients routes', () => {
     });
 
     describe('for an existent user', () => {
-      const clientData = { kind: CLIENT_KINDS.telegram };
+      const clientData = { kind: clientKinds.telegram };
       let user;
       let token;
 
