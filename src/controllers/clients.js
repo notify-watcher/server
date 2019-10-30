@@ -11,7 +11,7 @@ async function register(ctx) {
   ctx.assert(verification, createError.Unauthorized('Invalid code'));
   try {
     const client = await user.addClient(clientData);
-    ctx.body = { client };
+    ctx.body = client;
     ctx.status = HTTP_CODES.created;
   } catch (err) {
     ctx.throw(createError.BadRequest('Invalid client'));
