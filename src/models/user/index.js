@@ -30,7 +30,8 @@ class User {
   }
 
   async addClient(clientData) {
-    this.clients.push(clientData);
+    const { kind, ...data } = clientData;
+    this.clients.push({ kind, data });
     await this.save();
     return _.last(this.clients);
   }

@@ -10,6 +10,10 @@ const schema = new Schema({
     required: true,
     index: true,
   },
+  data: {
+    type: Schema.Types.Mixed,
+    required: true,
+  },
 });
 
 module.exports = schema;
