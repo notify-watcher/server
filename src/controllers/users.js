@@ -39,7 +39,7 @@ async function subscribe(ctx) {
       auth,
       notificationTypes,
     );
-    ctx.body = { subscription };
+    ctx.body = subscription;
     ctx.status = HTTP_CODES.created;
   } catch (err) {
     ctx.throw(createError.BadRequest('Invalid subscription'));
