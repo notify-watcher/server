@@ -40,13 +40,14 @@ class User {
     return _.last(this.clients);
   }
 
-  updateSubscription(watcher, auth, notificationTypes) {
+  async updateSubscription(watcher, auth, notificationTypes) {
     const index = _.findIndex(this.subscriptions, { watcher });
-    let baseSubscription =
+    let subscription =
       index > 0 ? this.subscriptions[index] : { watcher, snapshot: {} };
-    baseSubscription = { ...baseSubscription, auth, notificationTypes };
-    this.subscriptions.splice(index, 1, baseSubscription);
-    return this.save();
+    subscription = { ...subscription, auth, notificationTypes };
+    this.subscriptions.splice(index, 1, subscription);
+    await this.save();
+    return this.subscriptions[index];
   }
 }
 

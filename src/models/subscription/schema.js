@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const config = require('../../config');
+
 const { Schema } = mongoose;
 
 const STATUSES = ['valid', 'invalid-auth'];
@@ -24,7 +26,22 @@ const schema = new Schema({
     enum: STATUSES,
     required: true,
   },
-  auth: Schema.Types.Mixed,
+  auth: {
+    type: Schema.Types.Mixed,
+    validate: {
+      validator: function(auth) {
+        console.log(this.watcher);
+        const {
+          config: { auth: authConfig },
+          checkAuth,
+        } = config.WATCHERS.watchers[this.watcher];
+        if (!authConfig) return true;
+        if (checkAuth) return checkAuth({ auth });
+        return false;
+      },
+      message: 'Auth is not valid',
+    },
+  },
   notificationTypes: [notificationTypeSchema],
   snapshot: Schema.Types.Mixed,
 });
