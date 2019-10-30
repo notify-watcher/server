@@ -100,8 +100,8 @@ describe('users routes', () => {
         it('should return "created"', () =>
           expect(validResponse.status).toEqual(HTTP_CODES.created));
 
-        it('should return a subscription', () =>
-          expect(validResponse.body).toHaveProperty('subscription'));
+        it('should return a subscription for the watcher', () =>
+          expect(validResponse.body).toHaveProperty('watcher', watcher.name));
       });
     });
   });
