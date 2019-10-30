@@ -26,7 +26,26 @@ async function show(ctx) {
   ctx.body = _.pick(user, ['email', 'clients', 'subscriptions']);
 }
 
+async function subscribe(ctx) {
+  const { email, watcher, auth, notificationTypes } = ctx.request.body;
+  const user = await User.findOne({ email }).orFail(() =>
+    createError.NotFound('No user has this email'),
+  );
+  try {
+    const subscription = await user.updateSubscription(
+      watcher,
+      auth,
+      notificationTypes,
+    );
+    ctx.body = { subscription };
+    ctx.status = HTTP_CODES.created;
+  } catch (err) {
+    ctx.throw(createError.BadRequest('Invalid subscription'));
+  }
+}
+
 module.exports = {
   sendToken,
   show,
+  subscribe,
 };
