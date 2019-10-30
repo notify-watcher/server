@@ -1,14 +1,12 @@
 const mongoose = require('mongoose');
-const {
-  constants: { CLIENT_KINDS },
-} = require('@notify-watcher/core');
+const { clientKinds } = require('../../notifications/clients');
 
 const { Schema } = mongoose;
 
 const schema = new Schema({
   kind: {
     type: String,
-    enum: Object.keys(CLIENT_KINDS),
+    enum: Object.keys(clientKinds),
     required: true,
     index: true,
   },
