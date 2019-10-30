@@ -29,8 +29,7 @@ const schema = new Schema({
   auth: {
     type: Schema.Types.Mixed,
     validate: {
-      validator: function(auth) {
-        console.log(this.watcher);
+      validator(auth) {
         const {
           config: { auth: authConfig },
           checkAuth,
@@ -41,6 +40,10 @@ const schema = new Schema({
       },
       message: 'Auth is not valid',
     },
+  },
+  authFailed: {
+    type: Boolean,
+    default: false,
   },
   notificationTypes: [notificationTypeSchema],
   snapshot: Schema.Types.Mixed,
