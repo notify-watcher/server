@@ -31,6 +31,10 @@ class User {
 
   async addClient(clientData) {
     const { kind, ...data } = clientData;
+    const existentClient = this.clients.filter(
+      client => client.kind === kind && _.isEqual(client.data, data),
+    )[0];
+    if (existentClient) return existentClient;
     this.clients.push({ kind, data });
     await this.save();
     return _.last(this.clients);
