@@ -27,7 +27,25 @@ async function show(ctx) {
 }
 
 // TODO: add auth
-async function subscribe(ctx) {
+async function registerClient(ctx) {
+  const { email } = ctx.params;
+  const { token, clientData } = ctx.request.body;
+  const user = await User.findOne({ email }).orFail(() =>
+    createError.NotFound('No user has this email'),
+  );
+  const verification = await user.verifyToken(token);
+  ctx.assert(verification, createError.Unauthorized('Invalid code'));
+  try {
+    const client = await user.addClient(clientData);
+    ctx.body = client;
+    ctx.status = HTTP_CODES.created;
+  } catch (err) {
+    ctx.throw(createError.BadRequest('Invalid client'));
+  }
+}
+
+// TODO: add auth
+async function subscribeWatcher(ctx) {
   const { email } = ctx.params;
   const { watcher, auth, notificationTypes } = ctx.request.body;
   const user = await User.findOne({ email }).orFail(() =>
@@ -49,5 +67,6 @@ async function subscribe(ctx) {
 module.exports = {
   sendToken,
   show,
-  subscribe,
+  subscribeWatcher,
+  registerClient,
 };

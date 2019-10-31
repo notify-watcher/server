@@ -6,6 +6,7 @@ const router = new Router();
 router.post('/send-token', UsersController.sendToken);
 
 router.get('/:email', UsersController.show);
-router.post('/:email/subscriptions', UsersController.subscribe);
+router.post('/:email/clients', UsersController.registerClient);
+router.post('/:email/subscriptions', UsersController.subscribeWatcher);
 
 module.exports = router;
