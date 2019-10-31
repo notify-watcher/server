@@ -39,6 +39,20 @@ class User {
     await this.save();
     return _.last(this.clients);
   }
+
+  async updateSubscription(watcher, auth, notificationTypes) {
+    let index = _.findIndex(this.subscriptions, { watcher });
+    let subscription;
+    if (index > 0) subscription = this.subscriptions[index];
+    else {
+      subscription = { watcher };
+      index = this.subscriptions.push(subscription) - 1;
+    }
+
+    this.subscriptions[index] = { ...subscription, auth, notificationTypes };
+    await this.save();
+    return this.subscriptions[index];
+  }
 }
 
 schema.loadClass(User);

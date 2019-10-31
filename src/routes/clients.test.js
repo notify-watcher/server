@@ -56,10 +56,11 @@ describe('clients routes', () => {
           });
         });
 
-        it('should return "ok"', () =>
-          expect(validResponse.status).toEqual(HTTP_CODES.ok));
+        it('should return "created"', () =>
+          expect(validResponse.status).toEqual(HTTP_CODES.created));
+
         it('should return a client', () =>
-          expect(validResponse.body).toHaveProperty('client'));
+          expect(validResponse.body).toHaveProperty('kind', clientData.kind));
       });
     });
   });

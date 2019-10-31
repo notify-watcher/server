@@ -1,10 +1,10 @@
-const { loadWatchers } = require('../watchers/load-watchers');
 const request = require('../tests/supertest');
+const config = require('../config');
 const { HTTP_CODES } = require('../constants');
 
 describe('watchers routes', () => {
   describe('GET /watchers', () => {
-    const { watchersList } = loadWatchers();
+    const watchersList = config.WATCHERS.list;
     let response;
 
     beforeAll(async () => {

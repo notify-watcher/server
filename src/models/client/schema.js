@@ -11,7 +11,7 @@ const schema = new Schema({
     index: true,
   },
   data: {
-    type: Schema.Types.Mixed,
+    type: Object,
     required: true,
   },
 });
