@@ -16,9 +16,8 @@ const schema = new Schema({
 
 class Snapshot {
   static async forWatcher(watcher) {
-    let snaphost = await this.findOne({ watcher });
-    if (!snaphost) snaphost = await this.create({ watcher });
-    return snaphost;
+    const snaphost = await this.findOne({ watcher });
+    return snaphost || this.create({ watcher });
   }
 
   updateSnapshot(snapshot) {
