@@ -4,28 +4,24 @@ const { clientHandlers, clientKinds } = require('./clients');
 const { env } = require('../config');
 
 const LOCAL_ENV = {
-  usersNotifications: true,
-  clientsNotifications: true,
-  clientKindsNotifications: true,
+  usersNotifications: false,
+  clientsNotifications: false,
+  clientKindsNotifications: false,
 };
-
-function userClientForClientId(user, clientId) {
-  return {};
-  // return MOCK_CLIENTS[clientId];
-}
 
 function groupUserNotifications({ user, notifications, watcherName }) {
   // { clientId: { client, notifications } }
   const userClientNotifications = {};
-  const { notificationTypes } = user.subscriptions[watcherName];
+  const subscription = user.subscriptionForWatcher(watcherName);
 
   notifications.forEach(notification => {
-    const clientIds = notificationTypes[notification.type];
+    const { clientIds } =
+      subscription.notificationType(notification.type) || {};
     if (!clientIds || clientIds.length === 0) return;
 
     clientIds.forEach(clientId => {
       if (!userClientNotifications[clientId]) {
-        const client = userClientForClientId(user, clientId);
+        const client = user.clients.id(clientId);
         if (!client) return;
 
         userClientNotifications[clientId] = { client, notifications: [] };
@@ -95,7 +91,7 @@ function sendWatcherNotifications(watcherName, usersNotifications) {
   if (env.isDev && LOCAL_ENV.usersNotifications)
     console.log(
       `usersNotifications ${watcherName}\n`,
-      util.inspect(usersNotifications, { showHidden: false, depth: 2 }),
+      util.inspect(usersNotifications, { showHidden: false, depth: 3 }),
     );
 
   const clientsNotifications = groupUsersNotifications(
@@ -116,7 +112,7 @@ function sendWatcherNotifications(watcherName, usersNotifications) {
   if (env.isDev && LOCAL_ENV.clientKindsNotifications)
     console.log(
       `clientKindsNotifications ${watcherName}\n`,
-      util.inspect(clientKindsNotifications, { showHidden: false, depth: 2 }),
+      util.inspect(clientKindsNotifications, { showHidden: false, depth: 4 }),
     );
 
   return sendClientKindsNotifications(clientKindsNotifications, watcherName);

@@ -19,7 +19,7 @@ function clientHandler(watcherName, clientsNotifications) {
     );
 
   const chatIdsNotifications = clientsNotifications.map(
-    ({ client: { chatId }, notifications }) => ({ chatId, notifications }),
+    ({ client: { data }, notifications }) => ({ ...data, notifications }),
   );
   return axios.post(`${url}/notifications`, chatIdsNotifications);
 }

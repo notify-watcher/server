@@ -1,4 +1,6 @@
+/* eslint-disable max-classes-per-file */
 const mongoose = require('mongoose');
+const _ = require('lodash');
 
 const { Schema } = mongoose;
 
@@ -36,6 +38,10 @@ class Subscription {
   updateSnapshot(snapshot) {
     this.snapshot = snapshot;
     return this.ownerDocument().save();
+  }
+
+  notificationType(notificationType) {
+    return _.find(this.notificationTypes, { notificationType });
   }
 }
 

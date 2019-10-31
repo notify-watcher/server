@@ -88,6 +88,7 @@ async function runWatchersAuth(watchers) {
           error.status === HTTP_CODES.forbidden
         ) {
           // TODO: send notification to user https://github.com/notify-watcher/server/issues/56
+          stopRunning(id);
           return;
         }
         // TODO: rollbar
@@ -100,7 +101,8 @@ async function runWatchersAuth(watchers) {
       }
 
       const { notifications, error, snapshot } = response;
-      await subscription.updateSnapshot(snapshot);
+      // TODO: uncomment
+      // await subscription.updateSnapshot(snapshot);
       stopRunning(id);
       logWatcherIteration({
         watcherName,
@@ -151,7 +153,7 @@ async function runWatchersNoAuth(watchers) {
       // TODO: rollbar
       console.warn(`ERR: Watcher ${watcherName} threw error`);
       console.warn(error);
-      stopRunning(watcherName);
+      stopRunning(id);
       return;
     }
 
