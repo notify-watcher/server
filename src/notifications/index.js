@@ -9,31 +9,6 @@ const LOCAL_ENV = {
   clientKindsNotifications: false,
 };
 
-// TODO: delete this when connecting to the db
-// https://github.com/notify-watcher/server/issues/22
-const MOCK_CLIENTS = {
-  user1TelegramChatId1: {
-    kind: clientKinds.telegram,
-    chatId: '784232',
-  },
-  user2TelegramChatId1: {
-    kind: clientKinds.telegram,
-    chatId: '784232',
-  },
-  user2TelegramChatId2: {
-    kind: clientKinds.telegram,
-    chatId: 'user2TelegramChatId2',
-  },
-  user1Email1: {
-    kind: clientKinds.email,
-    email: 'user1Email1@example.com',
-  },
-  user2Email1: {
-    kind: clientKinds.email,
-    email: 'user2Email1@example.com',
-  },
-};
-
 function userClientForClientId(user, clientId) {
   return MOCK_CLIENTS[clientId];
 }
