@@ -14,7 +14,7 @@ const LOCAL_ENV = {
   watcherIteration: false,
   watcherAuthRun: false,
   watcherNoAuthRun: false,
-  alwaysRunDayWatcher: true,
+  alwaysRunDayWatcher: false,
 };
 
 // Keep track of which watchers are running,
@@ -101,8 +101,7 @@ async function runWatchersAuth(watchers) {
       }
 
       const { notifications, error, snapshot } = response;
-      // TODO: uncomment
-      // await subscription.updateSnapshot(snapshot);
+      await subscription.updateSnapshot(snapshot);
       stopRunning(id);
       logWatcherIteration({
         watcherName,
