@@ -113,6 +113,7 @@ async function runWatchersAuth(watchers) {
           `ERR: Watcher ${watcherName} for user ${user.name} threw error`,
         );
         console.warn(error);
+        stopRunning(id);
         return;
       }
 
@@ -168,6 +169,7 @@ async function runWatchersNoAuth(watchers) {
       // TODO: rollbar
       console.warn(`ERR: Watcher ${watcherName} threw error`);
       console.warn(error);
+      stopRunning(watcherName);
       return;
     }
 
