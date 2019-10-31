@@ -4,13 +4,14 @@ const { clientHandlers, clientKinds } = require('./clients');
 const { env } = require('../config');
 
 const LOCAL_ENV = {
-  usersNotifications: false,
-  clientsNotifications: false,
-  clientKindsNotifications: false,
+  usersNotifications: true,
+  clientsNotifications: true,
+  clientKindsNotifications: true,
 };
 
 function userClientForClientId(user, clientId) {
-  return MOCK_CLIENTS[clientId];
+  return {};
+  // return MOCK_CLIENTS[clientId];
 }
 
 function groupUserNotifications({ user, notifications, watcherName }) {
@@ -91,24 +92,27 @@ function sendClientKindsNotifications(clientKindsNotifications, watcherName) {
  * @param {{user: Object, notifications: Object[]}[]} usersNotifications
  */
 function sendWatcherNotifications(watcherName, usersNotifications) {
-  const clientsNotifications = groupUsersNotifications(
-    usersNotifications,
-    watcherName,
-  );
-  const clientKindsNotifications = groupClientsNotifications(
-    clientsNotifications,
-  );
-
   if (env.isDev && LOCAL_ENV.usersNotifications)
     console.log(
       `usersNotifications ${watcherName}\n`,
       util.inspect(usersNotifications, { showHidden: false, depth: 2 }),
     );
+
+  const clientsNotifications = groupUsersNotifications(
+    usersNotifications,
+    watcherName,
+  );
+
   if (env.isDev && LOCAL_ENV.clientsNotifications)
     console.log(
       `clientsNotifications ${watcherName}\n`,
       util.inspect(clientsNotifications, { showHidden: false, depth: 2 }),
     );
+
+  const clientKindsNotifications = groupClientsNotifications(
+    clientsNotifications,
+  );
+
   if (env.isDev && LOCAL_ENV.clientKindsNotifications)
     console.log(
       `clientKindsNotifications ${watcherName}\n`,
