@@ -32,4 +32,13 @@ const schema = new Schema({
   },
 });
 
+class Subscription {
+  updateSnapshot(snapshot) {
+    this.snapshot = snapshot;
+    return this.ownerDocument().save();
+  }
+}
+
+schema.loadClass(Subscription);
+
 module.exports = schema;
