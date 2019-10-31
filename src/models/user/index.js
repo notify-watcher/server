@@ -42,14 +42,9 @@ class User {
 
   async updateSubscription(watcher, auth, notificationTypes) {
     let index = _.findIndex(this.subscriptions, { watcher });
-    let subscription;
-    if (index > 0) subscription = this.subscriptions[index];
-    else {
-      subscription = { watcher };
-      index = this.subscriptions.push(subscription) - 1;
-    }
-
-    this.subscriptions[index] = { ...subscription, auth, notificationTypes };
+    if (index < 0) index = this.subscriptions.push({ watcher }) - 1;
+    const subscription = this.subscriptions[index];
+    subscription.notificationTypes = notificationTypes;
     await this.save();
     return this.subscriptions[index];
   }
