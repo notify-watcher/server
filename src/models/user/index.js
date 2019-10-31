@@ -54,6 +54,10 @@ class User {
     return _.last(this.clients);
   }
 
+  subscriptionForWatcher(watcher) {
+    return _.find(this.subscriptions, { watcher });
+  }
+
   async updateSubscription(watcher, auth, notificationTypes) {
     let index = _.findIndex(this.subscriptions, { watcher });
     if (index < 0) index = this.subscriptions.push({ watcher }) - 1;
@@ -61,6 +65,10 @@ class User {
     subscription.notificationTypes = notificationTypes;
     await this.save();
     return this.subscriptions[index];
+  }
+
+  static forWatcher(watcher) {
+    return this.find({ 'subscriptions.watcher': watcher });
   }
 }
 
