@@ -5,7 +5,7 @@ const User = require('../models/user');
 const { HTTP_CODES } = require('../constants');
 
 async function sendToken(ctx) {
-  const { email } = ctx.request.body;
+  const { email } = ctx.params;
   let user = await User.findOne({ email });
   ctx.status = HTTP_CODES.noContent;
   if (!user) {
@@ -18,21 +18,14 @@ async function sendToken(ctx) {
 }
 
 // TODO: add auth
-async function show(ctx) {
-  const { email } = ctx.params;
-  const user = await User.findOne({ email }).orFail(() =>
-    createError.NotFound('No user has this email'),
-  );
-  ctx.body = _.pick(user, ['email', 'clients', 'subscriptions']);
+async function getUser(ctx) {
+  ctx.body = _.pick(ctx.state.user, ['email', 'clients', 'subscriptions']);
 }
 
 // TODO: add auth
 async function registerClient(ctx) {
-  const { email } = ctx.params;
+  const { user } = ctx.state;
   const { token, clientData } = ctx.request.body;
-  const user = await User.findOne({ email }).orFail(() =>
-    createError.NotFound('No user has this email'),
-  );
   const verification = await user.verifyToken(token);
   ctx.assert(verification, createError.Unauthorized('Invalid code'));
   try {
@@ -46,13 +39,9 @@ async function registerClient(ctx) {
 
 // TODO: add auth
 async function subscribeWatcher(ctx) {
-  const { email } = ctx.params;
   const { watcher, auth, notificationTypes } = ctx.request.body;
-  const user = await User.findOne({ email }).orFail(() =>
-    createError.NotFound('No user has this email'),
-  );
   try {
-    const subscription = await user.updateSubscription(
+    const subscription = await ctx.state.user.updateSubscription(
       watcher,
       auth,
       notificationTypes,
@@ -65,8 +54,8 @@ async function subscribeWatcher(ctx) {
 }
 
 module.exports = {
-  sendToken,
-  show,
-  subscribeWatcher,
+  getUser,
   registerClient,
+  sendToken,
+  subscribeWatcher,
 };
