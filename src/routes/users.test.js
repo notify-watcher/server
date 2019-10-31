@@ -7,7 +7,10 @@ const { HTTP_CODES } = require('../constants');
 
 describe('users routes', () => {
   describe('POST /users/send-token', () => {
-    const sendToken = body => request.post('/users/send-token').send(body);
+    function sendToken(email) {
+      return request.post(`/users/${email}/token`);
+    }
+
     const sendTokenEmailSpy = jest.spyOn(emails, 'sendToken');
 
     const email = 'send-token@example.org';
@@ -17,7 +20,7 @@ describe('users routes', () => {
 
     describe('to a non-existing user', () => {
       beforeAll(async () => {
-        response = await sendToken({ email });
+        response = await sendToken(email);
       });
 
       afterAll(async () => {
@@ -28,6 +31,7 @@ describe('users routes', () => {
 
       it('should return "created"', () =>
         expect(response.status).toEqual(HTTP_CODES.created));
+
       it('should send an email', () =>
         expect(sendTokenEmailSpy).toHaveBeenCalled());
     });
@@ -38,7 +42,7 @@ describe('users routes', () => {
       beforeAll(async () => {
         user = await User.create({ email });
         await user.createSecret();
-        response = await sendToken({ email });
+        response = await sendToken(email);
       });
 
       afterAll(() => {
@@ -48,6 +52,7 @@ describe('users routes', () => {
 
       it('should return "no content"', () =>
         expect(response.status).toEqual(HTTP_CODES.noContent));
+
       it('should send an email', () =>
         expect(sendTokenEmailSpy).toHaveBeenCalled());
     });
