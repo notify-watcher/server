@@ -19,93 +19,20 @@ const LOCAL_ENV = {
 // Keep track of which watchers are running,
 // use name as a key for no auth watchers
 // use name+username as a key for auth watchers
-const MOCK_REDIS = {};
+const RUNNING_WATCHERS = {};
 
-const Users = [
-  {
-    name: 'user1',
-    email: 'user1@example.com',
-    subscriptions: {
-      'github-notifications': {
-        auth: {
-          token: process.env.GITHUB_NOTIFICATIONS_TOKEN,
-        },
-        notificationTypes: {
-          subscribed: ['user1TelegramChatId1'],
-        },
-        snapshot: {},
-      },
-      'unired-tag': {
-        auth: {
-          rut: process.env.RUT,
-        },
-        notificationTypes: {
-          updatedBallot: ['user1TelegramChatId1'],
-        },
-        snapshot: {},
-      },
-      gtd: {
-        notificationTypes: {
-          newPlan: ['user1TelegramChatId1'],
-        },
-      },
-      vtr: {
-        notificationTypes: {
-          newPlan: ['user1Email1'],
-        },
-      },
-    },
-  },
-  {
-    name: 'user2',
-    email: 'user2@example.com',
-    subscriptions: {
-      'unired-tag': {
-        auth: {
-          rut: process.env.RUT,
-        },
-        notificationTypes: {
-          updatedBallot: ['user2ClientId1'],
-        },
-        snapshot: {},
-      },
-      gtd: {
-        notificationTypes: {
-          newPlan: ['user2TelegramChatId1', 'user2Email1'],
-        },
-      },
-      vtr: {
-        notificationTypes: {
-          newPlan: ['user2TelegramChatId2'],
-        },
-      },
-    },
-  },
-];
-
-const Snapshots = [
-  {
-    watcher: 'gtd',
-    snapshot: {},
-  },
-  {
-    watcher: 'vtr',
-    snapshot: {},
-  },
-];
-
-async function isRunning(id) {
-  const watcherIsRunning = MOCK_REDIS[id];
+function isRunning(id) {
+  const watcherIsRunning = RUNNING_WATCHERS[id];
   if (watcherIsRunning) console.log(`Watcher already running: ${id}`);
   return watcherIsRunning;
 }
 
-async function startRunning(id) {
-  MOCK_REDIS[id] = true;
+function startRunning(id) {
+  RUNNING_WATCHERS[id] = true;
 }
 
-async function stopRunning(id) {
-  MOCK_REDIS[id] = false;
+function stopRunning(id) {
+  RUNNING_WATCHERS[id] = false;
 }
 
 async function usersForWatcher(watcherName) {
@@ -161,9 +88,9 @@ async function runWatchersAuth(watchers) {
     const users = await usersForWatcher(watcherName);
     const runWatchersPromises = users.map(async user => {
       const id = `${watcherName}:${user.name}`;
-      if (await isRunning(id)) return;
+      if (isRunning(id)) return;
 
-      await startRunning(id);
+      startRunning(id);
       const auth = await getUserWatcherAuth(user, watcherName);
       const previousSnapshot = await getUserWatcherSnapshot(user, watcherName);
 
@@ -191,7 +118,7 @@ async function runWatchersAuth(watchers) {
 
       const { notifications, error, snapshot } = response;
       await updateUserWatcherSnapshot(user, watcherName, snapshot);
-      await stopRunning(id);
+      stopRunning(id);
       logWatcherIteration({
         watcherName,
         previousSnapshot,
@@ -226,8 +153,9 @@ async function runWatchersNoAuth(watchers) {
 
     const { name: watcherName, watch } = watcher;
     // eslint-disable-next-line no-useless-return
-    if (await isRunning(watcherName)) return;
+    if (isRunning(watcherName)) return;
 
+    startRunning(watcherName);
     const snapshotDocument = await Snapshot.forWatcher(watcherName);
     const previousSnapshot = snapshotDocument.snapshot;
 
@@ -245,6 +173,7 @@ async function runWatchersNoAuth(watchers) {
 
     const { notifications, error, snapshot } = response;
     await snapshotDocument.updateSnapshot(snapshot);
+    stopRunning(watcherName);
     logWatcherIteration({
       watcherName,
       previousSnapshot,
