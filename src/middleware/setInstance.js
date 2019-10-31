@@ -12,8 +12,8 @@ function setInstance(Model, paramName, resourceName, options) {
     if (ctx.state[resourceName]) return next();
 
     const paramValue = (fromBody ? ctx.request.body : ctx.params)[paramName];
-    const data = { [paramName]: paramValue };
-    ctx.state[resourceName] = await Model.findOne(data).orFail(
+    const query = { [paramName]: paramValue };
+    ctx.state[resourceName] = await Model.findOne(query).orFail(
       createError.NotFound(`No ${resourceName} has this ${paramName}`),
     );
 
