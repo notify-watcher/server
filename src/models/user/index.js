@@ -44,12 +44,7 @@ class User {
     let index = _.findIndex(this.subscriptions, { watcher });
     if (index < 0) index = this.subscriptions.push({ watcher }) - 1;
     const subscription = this.subscriptions[index];
-
-    subscription.notificationTypes = [];
-    notificationTypes.forEach(notificationType =>
-      subscription.notificationTypes.push(notificationType),
-    );
-
+    subscription.notificationTypes = notificationTypes;
     await this.save();
     return this.subscriptions[index];
   }
