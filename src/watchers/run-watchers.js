@@ -6,6 +6,7 @@ const {
 const { env } = require('../config.js');
 const { HTTP_CODES } = require('../constants');
 const { sendWatcherNotifications } = require('../notifications');
+const User = require('../models/user');
 const Snapshot = require('../models/snapshot');
 const executor = require('./executor');
 
@@ -33,25 +34,6 @@ function startRunning(id) {
 
 function stopRunning(id) {
   RUNNING_WATCHERS[id] = false;
-}
-
-async function usersForWatcher(watcherName) {
-  return Users.filter(user => user.subscriptions[watcherName]);
-}
-
-async function getUserWatcherAuth(user, watcherName) {
-  const subscription = user.subscriptions[watcherName];
-  return subscription.auth;
-}
-
-async function getUserWatcherSnapshot(user, watcherName) {
-  const subscription = user.subscriptions[watcherName];
-  return subscription.snapshot;
-}
-
-async function updateUserWatcherSnapshot(user, watcherName, snapshot) {
-  // eslint-disable-next-line no-param-reassign
-  user.subscriptions[watcherName].snapshot = snapshot;
 }
 
 function shouldRunWatcher({ config: { timeframe } }, runDate) {
@@ -85,14 +67,14 @@ async function runWatchersAuth(watchers) {
 
     const usersNotifications = [];
     const { name: watcherName, watch } = watcher;
-    const users = await usersForWatcher(watcherName);
+    const users = await User.forWatcher(watcherName);
     const runWatchersPromises = users.map(async user => {
-      const id = `${watcherName}:${user.name}`;
+      const id = `${watcherName}:${user.email}`;
       if (isRunning(id)) return;
 
       startRunning(id);
-      const auth = await getUserWatcherAuth(user, watcherName);
-      const previousSnapshot = await getUserWatcherSnapshot(user, watcherName);
+      const subscription = user.subscriptionForWatcher(watcherName);
+      const { auth, snapshot: previousSnapshot } = subscription;
 
       let response;
       try {
@@ -118,7 +100,7 @@ async function runWatchersAuth(watchers) {
       }
 
       const { notifications, error, snapshot } = response;
-      await updateUserWatcherSnapshot(user, watcherName, snapshot);
+      await subscription.updateSnapshot(snapshot);
       stopRunning(id);
       logWatcherIteration({
         watcherName,
@@ -185,7 +167,7 @@ async function runWatchersNoAuth(watchers) {
     });
     if (notifications.length === 0) return;
 
-    const users = await usersForWatcher(watcherName);
+    const users = await User.forWatcher(watcherName);
     if (users.length === 0) return;
 
     const usersNotifications = users.map(user => ({
