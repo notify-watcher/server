@@ -6,6 +6,7 @@ const {
 const { env } = require('../config.js');
 const { HTTP_CODES } = require('../constants');
 const { sendWatcherNotifications } = require('../notifications');
+const Snapshot = require('../models/snapshot');
 const executor = require('./executor');
 
 const LOCAL_ENV = {
@@ -126,15 +127,6 @@ async function updateUserWatcherSnapshot(user, watcherName, snapshot) {
   user.subscriptions[watcherName].snapshot = snapshot;
 }
 
-async function getSnapshotForWatcher(watcherName) {
-  return (Snapshots.find(({ watcher }) => watcher === watcherName) || {})
-    .snapshot;
-}
-
-async function updateWatcherSnapshot(watcherName, snapshot) {
-  Snapshots.find(({ watcher }) => watcher === watcherName).snapshot = snapshot;
-}
-
 function shouldRunWatcher({ config: { timeframe } }, runDate) {
   if (env.isDev && LOCAL_ENV.alwaysRunDayWatcher) return true;
 
@@ -236,8 +228,8 @@ async function runWatchersNoAuth(watchers) {
     // eslint-disable-next-line no-useless-return
     if (await isRunning(watcherName)) return;
 
-    await startRunning(watcherName);
-    const previousSnapshot = await getSnapshotForWatcher(watcherName);
+    const snapshotDocument = await Snapshot.forWatcher(watcherName);
+    const previousSnapshot = snapshotDocument.snapshot;
 
     let response;
     try {
@@ -252,8 +244,7 @@ async function runWatchersNoAuth(watchers) {
     }
 
     const { notifications, error, snapshot } = response;
-    await updateWatcherSnapshot(watcherName, snapshot);
-    await stopRunning(watcherName);
+    await snapshotDocument.updateSnapshot(snapshot);
     logWatcherIteration({
       watcherName,
       previousSnapshot,
