@@ -105,4 +105,64 @@ describe('users routes', () => {
       });
     });
   });
+
+  describe('POST /users/:email/clients', () => {
+    function register(email, body) {
+      return request.post(`/users/${email}/clients`).send(body);
+    }
+
+    describe('for a non existent user', () => {
+      it('should return "not found"', () =>
+        register('invalid email', {}).expect(HTTP_CODES.notFound));
+    });
+
+    describe('for an existent user', () => {
+      const clientData = { kind: clientKinds.telegram };
+      let user;
+      let token;
+
+      beforeAll(async () => {
+        user = await User.create({ email: 'user-client-register@example.org' });
+        await user.createSecret();
+        token = await user.generateToken();
+      });
+
+      afterAll(() => user.remove());
+
+      describe('with an invalid token', () => {
+        it('should return "unauthorized"', () =>
+          register(user.email, {
+            token: 'invalid',
+            clientData,
+          }).expect(HTTP_CODES.unauthorized));
+      });
+
+      describe('with an invalid client data', () => {
+        it('should return "bad request"', () =>
+          register(user.email, {
+            token,
+            clientData: {
+              kind: 'invalid-kind',
+            },
+          }).expect(HTTP_CODES.badRequest));
+      });
+
+      describe('with a valid token and client data', () => {
+        let validResponse;
+
+        beforeAll(async () => {
+          validResponse = await register(user.email, {
+            token,
+            clientData,
+          });
+        });
+
+        it('should return "created"', () =>
+          expect(validResponse.status).toEqual(HTTP_CODES.created));
+
+        it('should return a client', () =>
+          expect(validResponse.body).toHaveProperty('kind', clientData.kind));
+      });
+    });
+  });
 });
