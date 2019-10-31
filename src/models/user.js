@@ -1,9 +1,23 @@
 const speakeasy = require('speakeasy');
 const _ = require('lodash');
 const mongoose = require('mongoose');
-const schema = require('./schema');
+const ClientSchema = require('./client');
+const SubscriptionSchema = require('./subscription');
+
+const { Schema } = mongoose;
 
 const TOKEN_TTL = 15 * 60; // 15 minutes (specified in seconds)
+
+const schema = new Schema({
+  email: {
+    type: String,
+    required: true,
+    index: true,
+  },
+  secret: Schema.Types.String,
+  clients: [ClientSchema],
+  subscriptions: [SubscriptionSchema],
+});
 
 class User {
   createSecret() {
