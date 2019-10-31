@@ -153,7 +153,7 @@ async function runWatchersNoAuth(watchers) {
       // TODO: rollbar
       console.warn(`ERR: Watcher ${watcherName} threw error`);
       console.warn(error);
-      stopRunning(id);
+      stopRunning(watcherName);
       return;
     }
 
