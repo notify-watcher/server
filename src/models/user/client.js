@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { clientKinds } = require('../notifications/clients');
+const { clientKinds } = require('../../notifications/clients');
 
 const { Schema } = mongoose;
 
