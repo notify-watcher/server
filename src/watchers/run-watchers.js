@@ -20,20 +20,20 @@ const LOCAL_ENV = {
 // Keep track of which watchers are running,
 // use name as a key for no auth watchers
 // use name+username as a key for auth watchers
-const RUNNING_WATCHERS = {};
+const runningWatchers = {};
 
 function isRunning(id) {
-  const watcherIsRunning = RUNNING_WATCHERS[id];
+  const watcherIsRunning = runningWatchers[id];
   if (watcherIsRunning) console.log(`Watcher already running: ${id}`);
   return watcherIsRunning;
 }
 
 function startRunning(id) {
-  RUNNING_WATCHERS[id] = true;
+  runningWatchers[id] = true;
 }
 
 function stopRunning(id) {
-  RUNNING_WATCHERS[id] = false;
+  runningWatchers[id] = false;
 }
 
 function shouldRunWatcher({ config: { timeframe } }, runDate) {
