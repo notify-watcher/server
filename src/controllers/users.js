@@ -10,7 +10,6 @@ async function sendToken(ctx) {
   ctx.status = HTTP_CODES.noContent;
   if (!user) {
     user = await User.create({ email });
-    await user.createSecret();
     ctx.status = HTTP_CODES.created;
   }
   const token = await user.generateToken();

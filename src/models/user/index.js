@@ -8,24 +8,26 @@ const { Schema } = mongoose;
 
 const TOKEN_TTL = 15 * 60; // 15 minutes (specified in seconds)
 
+function createSecret() {
+  return speakeasy.generateSecret({ length: 20 }).base32;
+}
+
 const schema = new Schema({
   email: {
     type: String,
     required: true,
     index: true,
   },
-  secret: String,
+  secret: {
+    type: String,
+    required: true,
+    default: createSecret,
+  },
   clients: [ClientSchema],
   subscriptions: [SubscriptionSchema],
 });
 
 class User {
-  createSecret() {
-    const secret = speakeasy.generateSecret({ length: 20 });
-    this.secret = secret.base32;
-    return this.save();
-  }
-
   generateToken() {
     return speakeasy.totp({
       secret: this.secret,
