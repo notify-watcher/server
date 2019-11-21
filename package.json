@@ -32,7 +32,7 @@
     "lint:fix": "eslint --fix .",
     "prerelease": "scripts/prerelease.sh",
     "release": "standard-version",
-    "postrelease": "git push --follow-tags && gh-release -y",
+    "postrelease": "git push --follow-tags",
     "start": "node src/index.js",
     "test:ci": "jest",
     "test": "jest --watchAll"
@@ -63,7 +63,6 @@
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jest": "^22.19.0",
     "eslint-plugin-prettier": "^3.1.1",
-    "gh-release": "^3.5.0",
     "jest": "^24.9.0",
     "maildev": "^1.1.0",
     "nodemon": "^1.19.3",
