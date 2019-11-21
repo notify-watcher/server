@@ -2,7 +2,6 @@
 
 - [Links](#links)
 - [Development](#development)
-  - [Email](#email)
 
 ## Links
 
@@ -10,6 +9,7 @@
 
 ## Development
 
-### Email
-
-To use the email settings provided (localhost:1025) you can setup [maildev](https://github.com/djfarrelly/MailDev) and run that server at the same time as Notify Watcher.
+- Clone the repo
+- Run `npm install`
+- Optional: Run `docker-compose up -d` to run a `mongodb` database
+- Run `npm run dev`, this runs `maildev` and the server using `nodemon`
