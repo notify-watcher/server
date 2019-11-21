@@ -41,7 +41,6 @@ describe('users routes', () => {
 
       beforeAll(async () => {
         user = await User.create({ email });
-        await user.createSecret();
         response = await sendToken(email);
       });
 
@@ -128,7 +127,6 @@ describe('users routes', () => {
 
       beforeAll(async () => {
         user = await User.create({ email: 'user-client-register@example.org' });
-        await user.createSecret();
         token = await user.generateToken();
       });
 
