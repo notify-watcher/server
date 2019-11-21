@@ -5,6 +5,8 @@ const path = require('path');
 const TEMP_DIR_PATH = path.resolve(path.join('.', 'tmp'));
 
 const {
+  DATABASE_USERNAME,
+  DATABASE_PASSWORD,
   DATABASE_HOST,
   DATABASE_NAME = 'notify-watcher',
   DATABASE_PORT = '27017',
@@ -20,9 +22,15 @@ const isTest = NODE_ENV === 'test';
 const isProd = NODE_ENV === 'production';
 
 function databaseUrl() {
-  if (DATABASE_HOST)
-    return `mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}`;
   if (isTest) return 'mongodb://localhost/notify-watcher-test';
+
+  if (DATABASE_HOST) {
+    if (!DATABASE_USERNAME || !DATABASE_PASSWORD)
+      throw new Error('Missing username or password for database');
+
+    return `mongodb://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}`;
+  }
+
   return 'mongodb://localhost/notify-watcher';
 }
 
