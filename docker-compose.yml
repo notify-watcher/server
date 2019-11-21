@@ -1,25 +1,10 @@
-# For running locally
-
 version: '3'
-services:
-  server:
-    image: docker.pkg.github.com/notify-watcher/server/server
-    restart: on-failure
-    environment:
-      - DATABASE_HOST=mongo
-      - PORT=80
-      - GITHUB_NOTIFICATIONS_TOKEN=$GITHUB_NOTIFICATIONS_TOKEN
-      - RUT=$RUT
-      - NODE_ENV=development
-    ports:
-      - '3001:80'
-    depends_on:
-      - mongo
 
-  mongo:
+services:
+  db:
     image: mongo:4
-    expose:
-      - 27017
+    ports:
+      - '27017:27017'
     volumes:
       - './tmp/mongodb/db:/data/db'
       - './tmp/mongodb/config:/data/configdb'
