@@ -77,7 +77,7 @@ workflows:
   commit:
     jobs:
       - bootstrap:
-          context: github-package-registry
+          context: notify-watcher
       - lint:
           requires:
             - bootstrap
@@ -88,8 +88,7 @@ workflows:
           requires:
             - bootstrap
       - build_push:
-          context: github-package-registry
-          context: docker-hub
+          context: notify-watcher
           requires:
             - lint
             - test
