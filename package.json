@@ -30,7 +30,6 @@
     "download-watchers": "DOWNLOAD_WATCHERS=true node src/watchers/download-watchers.js",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "prerelease": "scripts/prerelease.sh",
     "release": "standard-version",
     "postrelease": "git push --follow-tags",
     "start": "node src/index.js",
