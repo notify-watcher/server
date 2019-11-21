@@ -22,7 +22,7 @@
   ],
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "dev": "nodemon src/index.js",
+    "dev": "maildev & nodemon src/index.js",
     "dev:watchers": "DOWNLOAD_WATCHERS=true nodemon src/index.js",
     "docker:build": "scripts/docker_build.sh",
     "docker:push": "npm run docker:build && scripts/docker_push.sh",
@@ -65,6 +65,7 @@
     "eslint-plugin-prettier": "^3.1.1",
     "gh-release": "^3.5.0",
     "jest": "^24.9.0",
+    "maildev": "^1.1.0",
     "nodemon": "^1.19.3",
     "prettier": "^1.18.2",
     "rosie": "^2.0.1",

@@ -1,17 +1,33 @@
 const speakeasy = require('speakeasy');
 const _ = require('lodash');
 const mongoose = require('mongoose');
-const schema = require('./schema');
+const ClientSchema = require('./client');
+const SubscriptionSchema = require('./subscription');
+
+const { Schema } = mongoose;
 
 const TOKEN_TTL = 15 * 60; // 15 minutes (specified in seconds)
 
-class User {
-  createSecret() {
-    const secret = speakeasy.generateSecret({ length: 20 });
-    this.secret = secret.base32;
-    return this.save();
-  }
+function createSecret() {
+  return speakeasy.generateSecret({ length: 20 }).base32;
+}
 
+const schema = new Schema({
+  email: {
+    type: String,
+    required: true,
+    index: true,
+  },
+  secret: {
+    type: String,
+    required: true,
+    default: createSecret,
+  },
+  clients: [ClientSchema],
+  subscriptions: [SubscriptionSchema],
+});
+
+class User {
   generateToken() {
     return speakeasy.totp({
       secret: this.secret,
@@ -40,6 +56,10 @@ class User {
     return _.last(this.clients);
   }
 
+  subscriptionForWatcher(watcher) {
+    return _.find(this.subscriptions, { watcher });
+  }
+
   async updateSubscription(watcher, auth, notificationTypes) {
     let index = _.findIndex(this.subscriptions, { watcher });
     if (index < 0) index = this.subscriptions.push({ watcher }) - 1;
@@ -47,6 +67,10 @@ class User {
     subscription.notificationTypes = notificationTypes;
     await this.save();
     return this.subscriptions[index];
+  }
+
+  static forWatcher(watcher) {
+    return this.find({ 'subscriptions.watcher': watcher });
   }
 }
 

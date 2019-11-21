@@ -6,6 +6,8 @@ const {
 const { env } = require('../config.js');
 const { HTTP_CODES } = require('../constants');
 const { sendWatcherNotifications } = require('../notifications');
+const User = require('../models/user');
+const Snapshot = require('../models/snapshot');
 const executor = require('./executor');
 
 const LOCAL_ENV = {
@@ -18,121 +20,20 @@ const LOCAL_ENV = {
 // Keep track of which watchers are running,
 // use name as a key for no auth watchers
 // use name+username as a key for auth watchers
-const MOCK_REDIS = {};
+const runningWatchers = {};
 
-const Users = [
-  {
-    name: 'user1',
-    email: 'user1@example.com',
-    subscriptions: {
-      'github-notifications': {
-        auth: {
-          token: process.env.GITHUB_NOTIFICATIONS_TOKEN,
-        },
-        notificationTypes: {
-          subscribed: ['user1TelegramChatId1'],
-        },
-        snapshot: {},
-      },
-      'unired-tag': {
-        auth: {
-          rut: process.env.RUT,
-        },
-        notificationTypes: {
-          updatedBallot: ['user1TelegramChatId1'],
-        },
-        snapshot: {},
-      },
-      gtd: {
-        notificationTypes: {
-          newPlan: ['user1TelegramChatId1'],
-        },
-      },
-      vtr: {
-        notificationTypes: {
-          newPlan: ['user1Email1'],
-        },
-      },
-    },
-  },
-  {
-    name: 'user2',
-    email: 'user2@example.com',
-    subscriptions: {
-      'unired-tag': {
-        auth: {
-          rut: process.env.RUT,
-        },
-        notificationTypes: {
-          updatedBallot: ['user2ClientId1'],
-        },
-        snapshot: {},
-      },
-      gtd: {
-        notificationTypes: {
-          newPlan: ['user2TelegramChatId1', 'user2Email1'],
-        },
-      },
-      vtr: {
-        notificationTypes: {
-          newPlan: ['user2TelegramChatId2'],
-        },
-      },
-    },
-  },
-];
-
-const Snapshots = [
-  {
-    watcher: 'gtd',
-    snapshot: {},
-  },
-  {
-    watcher: 'vtr',
-    snapshot: {},
-  },
-];
-
-async function isRunning(id) {
-  const watcherIsRunning = MOCK_REDIS[id];
+function isRunning(id) {
+  const watcherIsRunning = runningWatchers[id];
   if (watcherIsRunning) console.log(`Watcher already running: ${id}`);
   return watcherIsRunning;
 }
 
-async function startRunning(id) {
-  MOCK_REDIS[id] = true;
+function startRunning(id) {
+  runningWatchers[id] = true;
 }
 
-async function stopRunning(id) {
-  MOCK_REDIS[id] = false;
-}
-
-async function usersForWatcher(watcherName) {
-  return Users.filter(user => user.subscriptions[watcherName]);
-}
-
-async function getUserWatcherAuth(user, watcherName) {
-  const subscription = user.subscriptions[watcherName];
-  return subscription.auth;
-}
-
-async function getUserWatcherSnapshot(user, watcherName) {
-  const subscription = user.subscriptions[watcherName];
-  return subscription.snapshot;
-}
-
-async function updateUserWatcherSnapshot(user, watcherName, snapshot) {
-  // eslint-disable-next-line no-param-reassign
-  user.subscriptions[watcherName].snapshot = snapshot;
-}
-
-async function getSnapshotForWatcher(watcherName) {
-  return (Snapshots.find(({ watcher }) => watcher === watcherName) || {})
-    .snapshot;
-}
-
-async function updateWatcherSnapshot(watcherName, snapshot) {
-  Snapshots.find(({ watcher }) => watcher === watcherName).snapshot = snapshot;
+function stopRunning(id) {
+  runningWatchers[id] = false;
 }
 
 function shouldRunWatcher({ config: { timeframe } }, runDate) {
@@ -166,14 +67,14 @@ async function runWatchersAuth(watchers) {
 
     const usersNotifications = [];
     const { name: watcherName, watch } = watcher;
-    const users = await usersForWatcher(watcherName);
+    const users = await User.forWatcher(watcherName);
     const runWatchersPromises = users.map(async user => {
-      const id = `${watcherName}:${user.name}`;
-      if (await isRunning(id)) return;
+      const id = `${watcherName}:${user.email}`;
+      if (isRunning(id)) return;
 
-      await startRunning(id);
-      const auth = await getUserWatcherAuth(user, watcherName);
-      const previousSnapshot = await getUserWatcherSnapshot(user, watcherName);
+      startRunning(id);
+      const subscription = user.subscriptionForWatcher(watcherName);
+      const { auth, snapshot: previousSnapshot } = subscription;
 
       let response;
       try {
@@ -187,6 +88,7 @@ async function runWatchersAuth(watchers) {
           error.status === HTTP_CODES.forbidden
         ) {
           // TODO: send notification to user https://github.com/notify-watcher/server/issues/56
+          stopRunning(id);
           return;
         }
         // TODO: rollbar
@@ -194,12 +96,13 @@ async function runWatchersAuth(watchers) {
           `ERR: Watcher ${watcherName} for user ${user.name} threw error`,
         );
         console.warn(error);
+        stopRunning(id);
         return;
       }
 
       const { notifications, error, snapshot } = response;
-      await updateUserWatcherSnapshot(user, watcherName, snapshot);
-      await stopRunning(id);
+      await subscription.updateSnapshot(snapshot);
+      stopRunning(id);
       logWatcherIteration({
         watcherName,
         previousSnapshot,
@@ -234,10 +137,11 @@ async function runWatchersNoAuth(watchers) {
 
     const { name: watcherName, watch } = watcher;
     // eslint-disable-next-line no-useless-return
-    if (await isRunning(watcherName)) return;
+    if (isRunning(watcherName)) return;
 
-    await startRunning(watcherName);
-    const previousSnapshot = await getSnapshotForWatcher(watcherName);
+    startRunning(watcherName);
+    const snapshotDocument = await Snapshot.forWatcher(watcherName);
+    const previousSnapshot = snapshotDocument.snapshot;
 
     let response;
     try {
@@ -248,12 +152,13 @@ async function runWatchersNoAuth(watchers) {
       // TODO: rollbar
       console.warn(`ERR: Watcher ${watcherName} threw error`);
       console.warn(error);
+      stopRunning(watcherName);
       return;
     }
 
     const { notifications, error, snapshot } = response;
-    await updateWatcherSnapshot(watcherName, snapshot);
-    await stopRunning(watcherName);
+    await snapshotDocument.updateSnapshot(snapshot);
+    stopRunning(watcherName);
     logWatcherIteration({
       watcherName,
       previousSnapshot,
@@ -263,7 +168,7 @@ async function runWatchersNoAuth(watchers) {
     });
     if (notifications.length === 0) return;
 
-    const users = await usersForWatcher(watcherName);
+    const users = await User.forWatcher(watcherName);
     if (users.length === 0) return;
 
     const usersNotifications = users.map(user => ({

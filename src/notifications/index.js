@@ -9,47 +9,19 @@ const LOCAL_ENV = {
   clientKindsNotifications: false,
 };
 
-// TODO: delete this when connecting to the db
-// https://github.com/notify-watcher/server/issues/22
-const MOCK_CLIENTS = {
-  user1TelegramChatId1: {
-    kind: clientKinds.telegram,
-    chatId: '784232',
-  },
-  user2TelegramChatId1: {
-    kind: clientKinds.telegram,
-    chatId: '784232',
-  },
-  user2TelegramChatId2: {
-    kind: clientKinds.telegram,
-    chatId: 'user2TelegramChatId2',
-  },
-  user1Email1: {
-    kind: clientKinds.email,
-    email: 'user1Email1@example.com',
-  },
-  user2Email1: {
-    kind: clientKinds.email,
-    email: 'user2Email1@example.com',
-  },
-};
-
-function userClientForClientId(user, clientId) {
-  return MOCK_CLIENTS[clientId];
-}
-
 function groupUserNotifications({ user, notifications, watcherName }) {
   // { clientId: { client, notifications } }
   const userClientNotifications = {};
-  const { notificationTypes } = user.subscriptions[watcherName];
+  const subscription = user.subscriptionForWatcher(watcherName);
 
   notifications.forEach(notification => {
-    const clientIds = notificationTypes[notification.type];
+    const { clientIds } =
+      subscription.notificationType(notification.type) || {};
     if (!clientIds || clientIds.length === 0) return;
 
     clientIds.forEach(clientId => {
       if (!userClientNotifications[clientId]) {
-        const client = userClientForClientId(user, clientId);
+        const client = user.clients.id(clientId);
         if (!client) return;
 
         userClientNotifications[clientId] = { client, notifications: [] };
@@ -116,28 +88,31 @@ function sendClientKindsNotifications(clientKindsNotifications, watcherName) {
  * @param {{user: Object, notifications: Object[]}[]} usersNotifications
  */
 function sendWatcherNotifications(watcherName, usersNotifications) {
+  if (env.isDev && LOCAL_ENV.usersNotifications)
+    console.log(
+      `usersNotifications ${watcherName}\n`,
+      util.inspect(usersNotifications, { showHidden: false, depth: 3 }),
+    );
+
   const clientsNotifications = groupUsersNotifications(
     usersNotifications,
     watcherName,
   );
-  const clientKindsNotifications = groupClientsNotifications(
-    clientsNotifications,
-  );
 
-  if (env.isDev && LOCAL_ENV.usersNotifications)
-    console.log(
-      `usersNotifications ${watcherName}\n`,
-      util.inspect(usersNotifications, { showHidden: false, depth: 2 }),
-    );
   if (env.isDev && LOCAL_ENV.clientsNotifications)
     console.log(
       `clientsNotifications ${watcherName}\n`,
       util.inspect(clientsNotifications, { showHidden: false, depth: 2 }),
     );
+
+  const clientKindsNotifications = groupClientsNotifications(
+    clientsNotifications,
+  );
+
   if (env.isDev && LOCAL_ENV.clientKindsNotifications)
     console.log(
       `clientKindsNotifications ${watcherName}\n`,
-      util.inspect(clientKindsNotifications, { showHidden: false, depth: 2 }),
+      util.inspect(clientKindsNotifications, { showHidden: false, depth: 4 }),
     );
 
   return sendClientKindsNotifications(clientKindsNotifications, watcherName);
