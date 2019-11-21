@@ -14,7 +14,7 @@ const schema = new Schema({
     required: true,
     index: true,
   },
-  secret: Schema.Types.String,
+  secret: String,
   clients: [ClientSchema],
   subscriptions: [SubscriptionSchema],
 });
