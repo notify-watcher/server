@@ -6,7 +6,7 @@
 
 ## Links
 
-- [Docker Hub](https://hub.docker.com/r/notifywatcher/server)
+- [Docker Hub](https://hub.docker.com/repository/docker/notifywatcher1/server)
 
 ## Development
 
