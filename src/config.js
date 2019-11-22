@@ -6,8 +6,8 @@ const TEMP_DIR_PATH = path.resolve(path.join('.', 'tmp'));
 const DEFAULT_DB_NAME = 'notify-watcher';
 
 const {
-  DATABASE_USERNAME = '',
-  DATABASE_PASSWORD = '',
+  DATABASE_USERNAME,
+  DATABASE_PASSWORD,
   DATABASE_HOST,
   DATABASE_NAME,
   DATABASE_PORT = '27017',
