@@ -3,12 +3,13 @@ const path = require('path');
 // const { clientKinds } = require('./notifications/clients');
 
 const TEMP_DIR_PATH = path.resolve(path.join('.', 'tmp'));
+const DEFAULT_DB_NAME = 'notify-watcher';
 
 const {
   DATABASE_USERNAME,
   DATABASE_PASSWORD,
   DATABASE_HOST,
-  DATABASE_NAME = 'notify-watcher',
+  DATABASE_NAME,
   DATABASE_PORT = '27017',
   DOWNLOAD_WATCHERS = false,
   NODE_ENV = 'development',
@@ -22,16 +23,12 @@ const isTest = NODE_ENV === 'test';
 const isProd = NODE_ENV === 'production';
 
 function databaseUrl() {
-  if (isTest) return 'mongodb://localhost/notify-watcher-test';
+  const dbName =
+    DATABASE_NAME || (isTest ? `${DEFAULT_DB_NAME}-test` : DEFAULT_DB_NAME);
+  if (DATABASE_HOST)
+    return `mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${dbName}`;
 
-  if (DATABASE_HOST) {
-    if (!DATABASE_USERNAME || !DATABASE_PASSWORD)
-      throw new Error('Missing username or password for database');
-
-    return `mongodb://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}`;
-  }
-
-  return 'mongodb://localhost/notify-watcher';
+  return `mongodb://localhost/${dbName}`;
 }
 
 // We can clone a private repo using the following url format
@@ -79,6 +76,8 @@ const config = {
     isTest,
     isProd,
   },
+  DATABASE_USERNAME,
+  DATABASE_PASSWORD,
   DATABASE_URL: databaseUrl(),
   DOWNLOAD_WATCHERS,
   WATCHERS_LIST,

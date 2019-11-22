@@ -1,18 +1,31 @@
 const mongoose = require('mongoose');
+const config = require('./config');
 
 // To fix https://github.com/Automattic/mongoose/issues/4291
 mongoose.Promise = global.Promise;
+
+const defaultOptions = {
+  useCreateIndex: true,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+};
+
+const authOptions = config.DATABASE_USERNAME &&
+  config.DATABASE_PASSWORD && {
+    auth: { authSource: 'admin' },
+    user: config.DATABASE_USERNAME,
+    pass: config.DATABASE_PASSWORD,
+  };
 
 /**
  * Connect to the database.
  * @param {string} databaseUrl Url of the database
  */
 function connect(databaseUrl) {
-  return mongoose.connect(databaseUrl, {
-    useCreateIndex: true,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  const options = authOptions
+    ? { ...defaultOptions, ...authOptions }
+    : defaultOptions;
+  return mongoose.connect(databaseUrl, options);
 }
 
 /**
