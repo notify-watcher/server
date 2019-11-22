@@ -1,4 +1,5 @@
 const path = require('path');
+const { version: VERSION } = require('../package.json');
 // THIS GENERATES A CIRCULAR DEPENDENCY, fix later
 // const { clientKinds } = require('./notifications/clients');
 
@@ -12,6 +13,7 @@ const {
   DATABASE_NAME,
   DATABASE_PORT = '27017',
   DOWNLOAD_WATCHERS = false,
+  GIT_DESCRIBE,
   NODE_ENV = 'development',
   NOTIFY_WATCHER_TOKEN = 'secret',
   NOTIFY_WATCHER_TELEGRAM_URL = 'http://localhost:3003',
@@ -80,6 +82,8 @@ const config = {
   DATABASE_PASSWORD,
   DATABASE_URL: databaseUrl(),
   DOWNLOAD_WATCHERS,
+  GIT_DESCRIBE,
+  VERSION,
   WATCHERS_LIST,
   WATCHERS_LIST_DOWNLOAD_ALL_KEY: 'all',
   WATCHERS_PATH: path.resolve(path.join('.', 'watchers')),

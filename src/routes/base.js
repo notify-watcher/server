@@ -1,5 +1,5 @@
 const Router = require('koa-router');
-const { version } = require('../../package.json');
+const config = require('../config');
 
 const router = new Router();
 
@@ -7,7 +7,8 @@ router.get('/', ctx => {
   ctx.body = {
     active: true,
     datetime: new Date(),
-    version,
+    version: `v${config.VERSION}`,
+    versionDescribe: config.GIT_DESCRIBE,
   };
 });
 
