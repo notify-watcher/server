@@ -5,8 +5,9 @@
   "main": "src/index.js",
   "repository": "https://github.com/notify-watcher/server.git",
   "author": {
-    "name": "Francisco Sandoval",
-    "email": "franciscosandoval15@gmail.com"
+    "name": "Nicolás Gebauer",
+    "email": "hello@negebauer.com",
+    "url": "https://negebauer.com"
   },
   "contributors": [
     {
@@ -15,9 +16,8 @@
       "url": "https://salatart.com"
     },
     {
-      "name": "Nicolás Gebauer",
-      "email": "negebauerm@gmail.com",
-      "url": "https://negebauer.com"
+      "name": "Francisco Sandoval",
+      "email": "franciscosandoval15@gmail.com"
     }
   ],
   "license": "AGPL-3.0-or-later",
