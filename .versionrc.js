@@ -1,6 +1,6 @@
 const config = {
   scripts: {
-    postchangelog: "sed -i '' -e 's/### [/## [/g' CHANGELOG.md",
+    postchangelog: "sed -i '' -e 's/### \[/## \[/g' CHANGELOG.md",
   },
 };
 
