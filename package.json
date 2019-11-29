@@ -5,13 +5,13 @@
   "main": "src/index.js",
   "repository": "https://github.com/notify-watcher/server.git",
   "author": {
-    "name": "Nicolás Gebauer",
+    "name": "Nicolas Gebauer",
     "email": "hello@negebauer.com",
     "url": "https://negebauer.com"
   },
   "contributors": [
     {
-      "name": "Sebastián Salata",
+      "name": "Sebastian Salata",
       "email": "sa.salatart@gmail.com",
       "url": "https://salatart.com"
     },
