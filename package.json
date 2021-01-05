@@ -41,7 +41,7 @@
   "dependencies": {
     "@notify-watcher/core": "^0.4.0",
     "@notify-watcher/executor": "^0.1.0",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "cron": "^1.7.2",
     "email-templates": "^6.0.3",
     "fs-extra": "^8.1.0",
